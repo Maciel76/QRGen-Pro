@@ -18,12 +18,12 @@
   --radius-sm: 8px;
 
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
-    0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
-    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-md:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl:
+    0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 
   --transition: all 0.3s ease;
 }
@@ -816,14 +816,23 @@ tr:hover {
     visibility: hidden;
   }
 
+  /* Impressão de visualização em cards */
   .qr-grid-container,
   .qr-grid-container * {
     visibility: visible;
   }
 
+  .qr-grid-container {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+
   .qr-grid {
-    grid-template-columns: repeat(3, 1fr) !important;
-    gap: 10mm;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 5mm;
+    padding: 0;
   }
 
   .qr-card {
@@ -831,15 +840,94 @@ tr:hover {
     page-break-inside: avoid;
     box-shadow: none;
     border: 1px solid #ddd;
-    height: 90mm;
+    height: auto;
+    min-height: 55mm;
+    padding: 8px;
   }
 
   .qr-card::before {
     display: none;
   }
 
+  .qr-header {
+    margin-bottom: 5px;
+  }
+
+  .qr-badge {
+    font-size: 0.65rem;
+    padding: 3px 8px;
+  }
+
+  .qr-content {
+    gap: 5px;
+  }
+
+  .qr-code-wrapper {
+    padding: 5px;
+  }
+
+  .qr-code-wrapper img,
+  .qr-code-wrapper canvas {
+    width: 50px !important;
+    height: 50px !important;
+  }
+
+  .qr-details h3 {
+    font-size: 0.75rem;
+    margin-bottom: 3px;
+    line-height: 1.2;
+  }
+
+  .qr-details p {
+    font-size: 0.65rem;
+    margin-bottom: 3px;
+    line-height: 1.2;
+  }
+
+  .qr-details .quantity {
+    font-size: 0.65rem;
+    padding: 2px 6px;
+    margin-top: 2px;
+  }
+
+  /* Impressão de visualização em tabela */
+  .table-container,
+  .table-container * {
+    visibility: visible;
+  }
+
+  .table-container {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    box-shadow: none;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  th,
+  td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    font-size: 0.75rem;
+  }
+
+  th {
+    background-color: #f0f0f0 !important;
+  }
+
+  .qr-container img,
+  .qr-container canvas {
+    width: 50px !important;
+    height: 50px !important;
+  }
+
   @page {
     size: A4;
-    margin: 10mm;
+    margin: 8mm;
   }
 }
