@@ -1,5 +1,5 @@
 // Vue.js Application
-const { createApp, ref, onMounted, nextTick } = Vue;
+const { createApp, ref, onMounted, nextTick, computed } = Vue;
 
 const app = createApp({
   setup() {
@@ -385,18 +385,43 @@ const app = createApp({
     // Lifecycle hooks
     onMounted(() => {
       loadFromLocalStorage();
-      
+
       // Load saved view mode
       const savedViewMode = localStorage.getItem("preferredView");
       if (savedViewMode) {
         viewMode.value = savedViewMode;
       }
+
+      // Detect PWA mode and add appropriate class
+      detectPWAMode();
     });
 
     // Watch for changes and save to localStorage
     watch([inputData, qrSize, qrEcc, dedup, qrColor, darkMode], () => {
       saveToLocalStorage();
     }, { deep: true });
+
+    // Function to detect if running as PWA
+    const detectPWAMode = () => {
+      // Check if running in standalone mode (PWA)
+      const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+
+      if (isIOS && window.navigator.standalone === true) {
+        document.body.classList.add('display-standalone');
+      } else if (isStandalone) {
+        document.body.classList.add('display-standalone');
+      }
+
+      // Also listen for changes in display mode
+      window.matchMedia('(display-mode: standalone)').addListener(function() {
+        if (window.matchMedia('(display-mode: standalone)').matches) {
+          document.body.classList.add('display-standalone');
+        } else {
+          document.body.classList.remove('display-standalone');
+        }
+      });
+    };
 
     return {
       inputData,

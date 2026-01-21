@@ -19,7 +19,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <!-- Main CSS -->
-  <link rel="stylesheet" href="styles-mobile.css">
+  <link rel="stylesheet" href="styles-app.css">
   <!-- Vue.js -->
   <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
   <!-- QRCode Library -->
@@ -30,15 +30,14 @@
 <body>
   <div id="app">
     <div class="container">
-      <header class="header">
-        <div class="header-content">
-          <h1><i class="fas fa-qrcode"></i> QRGen Produtos</h1>
-          <p class="description">
-            Gerador avançado de QR Codes para seus produtos e inventário
-          </p>
-        </div>
-        <div class="theme-toggle" @click="toggleTheme">
-          <i :class="darkMode ? 'fas fa-sun' : 'fas fa-moon'"></i>
+      <header class="app-bar">
+        <div class="app-bar-content">
+          <h1><i class="fas fa-qrcode"></i> QRGen Pro</h1>
+          <div class="app-bar-actions">
+            <div class="theme-toggle" @click="toggleTheme">
+              <i :class="darkMode ? 'fas fa-sun' : 'fas fa-moon'"></i>
+            </div>
+          </div>
         </div>
       </header>
 
@@ -196,38 +195,10 @@
         </div>
       </main>
 
-      <footer class="site-footer">
-        <div class="footer-content">
-          <div class="footer-section">
-            <h3>Desenvolvido por</h3>
-            <p>Maciel Ribeiro</p>
-          </div>
-
-          <div class="footer-section">
-            <h3>Contato</h3>
-            <div class="contact-links">
-              <a href="https://wa.me/5562982809010" target="_blank" class="contact-link">
-                <i class="fab fa-whatsapp"></i>
-                <span>(62) 98280-9010</span>
-              </a>
-
-              <a href="mailto:stwcontato@hotmail.com" class="contact-link">
-                <i class="fas fa-envelope"></i>
-                <span>stwcontato@hotmail.com</span>
-              </a>
-
-              <a href="https://github.com/Maciel76" target="_blank" class="contact-link">
-                <i class="fab fa-github"></i>
-                <span>Maciel76</span>
-              </a>
-            </div>
-          </div>
-        </div>
-
-        <div class="footer-bottom">
-          <p>&copy; 2023 QRGen Pro. Todos os direitos reservados.</p>
-        </div>
-      </footer>
+      <!-- Rodapé para PWA -->
+      <div class="pwa-footer">
+        QRGen Pro &copy; 2023 - Gerador de QR Codes
+      </div>
     </div>
   </div>
 

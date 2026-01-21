@@ -2,11 +2,12 @@
   "name": "QRGen Pro - Gerador de QR Codes",
   "short_name": "QRGen Pro",
   "description": "Aplicativo para geração de QR Codes para produtos e inventário",
-  "start_url": "/",
+  "start_url": "./index-vue.html",
   "display": "standalone",
   "background_color": "#f0f4ff",
   "theme_color": "#6366f1",
   "orientation": "portrait",
+  "scope": "./",
   "icons": [
     {
       "src": "./assets/icons/android-chrome-192x192.png",
@@ -19,5 +20,8 @@
       "sizes": "512x512",
       "type": "image/png"
     }
-  ]
+  ],
+  "categories": ["productivity", "utilities"],
+  "lang": "pt-BR",
+  "dir": "ltr"
 }
