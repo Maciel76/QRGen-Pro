@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QRGen Pro - Mobile</title>
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="./manifest.json">
+  <!-- PWA Icons -->
+  <link rel="apple-touch-icon" sizes="180x180" href="./assets/icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="./assets/icons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="./assets/icons/favicon-16x16.png">
+  <!-- PWA Theme Color -->
+  <meta name="theme-color" content="#6366f1">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Main CSS -->
+  <link rel="stylesheet" href="styles-mobile.css">
+  <!-- Vue.js -->
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <!-- QRCode Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <!-- Papa Parse for CSV -->
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+</head>
+<body>
+  <div id="app">
+    <div class="container">
+      <header class="header">
+        <div class="header-content">
+          <h1><i class="fas fa-qrcode"></i> QRGen Produtos</h1>
+          <p class="description">
+            Gerador avançado de QR Codes para seus produtos e inventário
+          </p>
+        </div>
+        <div class="theme-toggle" @click="toggleTheme">
+          <i :class="darkMode ? 'fas fa-sun' : 'fas fa-moon'"></i>
+        </div>
+      </header>
+
+      <main class="main-content">
+        <section class="control-panel">
+          <div class="panel-header">
+            <h2><i class="fas fa-sliders-h"></i> Controle de Geração</h2>
+            <div class="header-actions">
+              <button class="btn-help" @click="showHelp">
+                <i class="fas fa-question-circle"></i> Ajuda
+              </button>
+            </div>
+          </div>
+
+          <div class="input-section">
+            <label for="input" class="input-label">
+              <i class="fas fa-pencil-alt"></i> Dados para gerar QR Codes
+            </label>
+            <textarea
+              id="input"
+              v-model="inputData"
+              placeholder="Cole os dados no formato: código;nome;quantidade (uma linha por item)"
+            ></textarea>
+          </div>
+
+          <div class="file-upload">
+            <label for="csv" class="file-upload-label">
+              <i class="fas fa-cloud-upload-alt"></i> Selecionar arquivo CSV
+              <input type="file" id="csv" accept=".csv" @change="handleFileUpload">
+            </label>
+            <span id="file-name" class="file-name">{{ fileName }}</span>
+          </div>
+
+          <div class="options-grid">
+            <div class="option-group">
+              <label for="qrSize" class="option-label">
+                <i class="fas fa-expand-arrows-alt"></i> Tamanho do QR Code
+              </label>
+              <input type="number" id="qrSize" v-model.number="qrSize" min="64" max="256" />
+            </div>
+
+            <div class="option-group">
+              <label for="qrEcc" class="option-label">
+                <i class="fas fa-shield-alt"></i> Correção de Erro
+              </label>
+              <select id="qrEcc" v-model="qrEcc">
+                <option value="L">L (7%)</option>
+                <option value="M">M (15%)</option>
+                <option value="Q">Q (25%)</option>
+                <option value="H">H (30%)</option>
+              </select>
+            </div>
+
+            <div class="option-group checkbox-group">
+              <input type="checkbox" id="dedup" v-model="dedup" />
+              <label for="dedup" class="checkbox-label">
+                <i class="fas fa-filter"></i> Deduplicar por código
+              </label>
+            </div>
+
+            <div class="option-group">
+              <label for="qrColor" class="option-label">
+                <i class="fas fa-palette"></i> Cor do QR Code
+              </label>
+              <input type="color" id="qrColor" v-model="qrColor" />
+            </div>
+          </div>
+
+          <div class="actions">
+            <button @click="generateQRs" class="btn btn-primary">
+              <i class="fas fa-bolt"></i> Gerar QR Codes
+            </button>
+            <button @click="printQRs" class="btn btn-secondary">
+              <i class="fas fa-print"></i> Imprimir
+            </button>
+            <button @click="clearAll" class="btn btn-outline">
+              <i class="fas fa-trash-alt"></i> Limpar
+            </button>
+          </div>
+
+          <div v-if="statusMessage" :class="['status', statusType]">
+            {{ statusMessage }}
+          </div>
+        </section>
+
+        <section class="view-options">
+          <div class="view-toggle">
+            <button :class="['view-btn', { active: viewMode === 'cards' }]" @click="setViewMode('cards')">
+              <i class="fas fa-th-large"></i> Visualização em Cards
+            </button>
+            <button :class="['view-btn', { active: viewMode === 'table' }]" @click="setViewMode('table')">
+              <i class="fas fa-table"></i> Visualização em Tabela
+            </button>
+          </div>
+
+          <div class="results-info">
+            <span>{{ resultsCount }} itens</span>
+            <button class="btn-icon" @click="exportData">
+              <i class="fas fa-download"></i>
+            </button>
+          </div>
+        </section>
+
+        <div v-if="viewMode === 'cards'" class="qr-grid-container">
+          <div class="qr-grid">
+            <div v-for="(item, index) in qrData" :key="index" class="qr-card">
+              <div class="qr-header">
+                <div class="qr-badge">Item</div>
+              </div>
+              <div class="qr-content">
+                <div class="qr-code-wrapper">
+                  <div :ref="el => setQRRef(el, index)" class="qrbox"></div>
+                </div>
+                <div class="qr-details">
+                  <h3>{{ item.codigo }}</h3>
+                  <p>{{ item.nome }}</p>
+                  <span class="quantity">Qtd: {{ item.quantidade }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div v-if="viewMode === 'table'" class="table-container">
+          <table id="grid">
+            <thead>
+              <tr>
+                <th>Código</th>
+                <th>Nome</th>
+                <th>Quantidade</th>
+                <th>QR Code</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(item, index) in qrData" :key="index">
+                <td class="codigo">{{ item.codigo }}</td>
+                <td class="nome">{{ item.nome }}</td>
+                <td class="qt">{{ item.quantidade }}</td>
+                <td class="qr-container">
+                  <div :ref="el => setTableQRRef(el, index)" class="qrbox"></div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div v-if="qrData.length === 0" class="empty-state">
+          <div class="empty-icon">
+            <i class="fas fa-qrcode"></i>
+          </div>
+          <h3>Nada para exibir ainda</h3>
+          <p>
+            Cole os dados ou faça upload de um arquivo CSV para gerar QR Codes.
+          </p>
+        </div>
+      </main>
+
+      <footer class="site-footer">
+        <div class="footer-content">
+          <div class="footer-section">
+            <h3>Desenvolvido por</h3>
+            <p>Maciel Ribeiro</p>
+          </div>
+
+          <div class="footer-section">
+            <h3>Contato</h3>
+            <div class="contact-links">
+              <a href="https://wa.me/5562982809010" target="_blank" class="contact-link">
+                <i class="fab fa-whatsapp"></i>
+                <span>(62) 98280-9010</span>
+              </a>
+
+              <a href="mailto:stwcontato@hotmail.com" class="contact-link">
+                <i class="fas fa-envelope"></i>
+                <span>stwcontato@hotmail.com</span>
+              </a>
+
+              <a href="https://github.com/Maciel76" target="_blank" class="contact-link">
+                <i class="fab fa-github"></i>
+                <span>Maciel76</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          <p>&copy; 2023 QRGen Pro. Todos os direitos reservados.</p>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <script src="app-vue.js"></script>
+  <script>
+    // Register service worker for PWA functionality
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('./service-worker.js')
+          .then(function(registration) {
+            console.log('ServiceWorker registrado com sucesso:', registration.scope);
+          })
+          .catch(function(err) {
+            console.log('Falha ao registrar o service worker:', err);
+          });
+      });
+    }
+  </script>
+</body>
+</html>

@@ -140,4 +140,21 @@ PapaParse - Biblioteca de parsing de CSV
 
 Font Awesome - Ícones
 
-```
+Vue.js - Framework para interfaces reativas
+
+## 📱 Versão Mobile e PWA
+
+Agora o QRGen Pro está disponível como um Progressive Web App (PWA)!
+
+### Recursos da Versão Mobile:
+- Interface completamente responsiva otimizada para toque
+- Implementação com Vue.js para melhor experiência de usuário
+- Capacidade de instalar na tela inicial do dispositivo
+- Funcionamento offline com cache inteligente
+- Design adaptável a qualquer tamanho de tela
+
+### Como Usar a Versão Mobile:
+1. Acesse o site no seu navegador móvel
+2. Você verá um prompt para adicionar o aplicativo à tela inicial
+3. Toque em "Adicionar à tela inicial" para instalar o PWA
+4. Agora você pode usar o QRGen Pro como um aplicativo nativo!

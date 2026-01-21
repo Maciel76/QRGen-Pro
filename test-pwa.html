@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teste QRGen Pro Mobile</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: linear-gradient(135deg, #f0f4ff 0%, #fdf2ff 100%);
+      color: #111827;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+    
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 16px;
+      padding: 30px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+    
+    h1 {
+      color: #6366f1;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    
+    .subtitle {
+      text-align: center;
+      color: #6b7280;
+      margin-bottom: 30px;
+    }
+    
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin: 30px 0;
+    }
+    
+    .feature-card {
+      background: #f9fafb;
+      border-radius: 12px;
+      padding: 20px;
+      border-left: 4px solid #6366f1;
+      transition: transform 0.3s ease;
+    }
+    
+    .feature-card:hover {
+      transform: translateY(-5px);
+    }
+    
+    .feature-card h3 {
+      color: #1f2937;
+      margin-top: 0;
+    }
+    
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      justify-content: center;
+      margin: 30px 0;
+    }
+    
+    .btn {
+      padding: 15px 30px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-block;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(to right, #6366f1, #4f46e5);
+      color: white;
+    }
+    
+    .btn-secondary {
+      background: linear-gradient(to right, #10b981, #059669);
+      color: white;
+    }
+    
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .status {
+      margin: 20px 0;
+      padding: 15px;
+      border-radius: 8px;
+      display: none;
+    }
+    
+    .status.success {
+      background-color: #f0fdf4;
+      color: #16a34a;
+      border-left: 4px solid #16a34a;
+      display: block;
+    }
+    
+    .status.error {
+      background-color: #fef2f2;
+      color: #dc2626;
+      border-left: 4px solid #dc2626;
+      display: block;
+    }
+    
+    .instructions {
+      background: #f8fafc;
+      border-radius: 12px;
+      padding: 20px;
+      margin: 20px 0;
+    }
+    
+    .instructions h3 {
+      color: #4f46e5;
+      margin-top: 0;
+    }
+    
+    ul {
+      padding-left: 20px;
+    }
+    
+    li {
+      margin-bottom: 10px;
+    }
+    
+    footer {
+      text-align: center;
+      margin-top: 30px;
+      color: #6b7280;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>QRGen Pro - Versão Mobile</h1>
+    <p class="subtitle">Progressive Web App para geração de QR Codes</p>
+    
+    <div class="features">
+      <div class="feature-card">
+        <h3>📱 Mobile First</h3>
+        <p>Deseigned specifically for mobile devices with touch-friendly interface</p>
+      </div>
+      <div class="feature-card">
+        <h3>⚡ PWA Ready</h3>
+        <p>Installable app experience with offline capabilities</p>
+      </div>
+      <div class="feature-card">
+        <h3>🔄 Vue.js Powered</h3>
+        <p>Modern reactive interface for better user experience</p>
+      </div>
+    </div>
+    
+    <div class="buttons">
+      <a href="./index-vue.html" class="btn btn-primary">Acessar Versão Mobile</a>
+      <a href="./index.html" class="btn btn-secondary">Acessar Versão Desktop</a>
+    </div>
+    
+    <div id="status" class="status"></div>
+    
+    <div class="instructions">
+      <h3>Como Testar o PWA:</h3>
+      <ul>
+        <li>Abra a <strong>Versão Mobile</strong> acima em um navegador moderno</li>
+        <li>No Chrome/Edge: Clique nos três pontos no canto superior direito → "Instalar aplicativo"</li>
+        <li>No Safari (iOS): Clique no ícone de compartilhar → "Adicionar à tela de início"</li>
+        <li>Verifique se o Service Worker está ativo nas ferramentas do desenvolvedor</li>
+        <li>Teste a funcionalidade offline desabilitando a rede</li>
+      </ul>
+    </div>
+    
+    <div class="instructions">
+      <h3>Recursos do PWA:</h3>
+      <ul>
+        <li>Instalação como aplicativo nativo</li>
+        <li>Funcionamento offline</li>
+        <li>Notificações push (futuro recurso)</li>
+        <li>Experiência de usuário semelhante a aplicativos nativos</li>
+        <li>Carregamento rápido graças ao caching</li>
+      </ul>
+    </div>
+    
+    <footer>
+      <p>QRGen Pro - Gerador de QR Codes para Produtos | Desenvolvido por Maciel Ribeiro</p>
+    </footer>
+  </div>
+  
+  <script>
+    // Check if running as PWA
+    function checkPWAStatus() {
+      const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+      
+      if (isIOS && window.navigator.standalone === true) {
+        document.getElementById('status').innerHTML = '✓ Executando como PWA no iOS';
+        document.getElementById('status').className = 'status success';
+      } else if (isStandalone) {
+        document.getElementById('status').innerHTML = '✓ Executando como PWA no Android/Chrome';
+        document.getElementById('status').className = 'status success';
+      } else {
+        document.getElementById('status').innerHTML = 'ℹ Executando como página web normal (instale como PWA para experiência completa)';
+        document.getElementById('status').className = 'status';
+        document.getElementById('status').style.display = 'block';
+      }
+    }
+    
+    // Check service worker registration
+    function checkServiceWorker() {
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(function(registrations) {
+          if (registrations.length > 0) {
+            console.log('✓ Service Worker registrado');
+          } else {
+            console.log('⚠ Service Worker não registrado');
+          }
+        });
+      } else {
+        console.log('⚠ Service Worker não suportado');
+      }
+    }
+    
+    // Run checks when page loads
+    window.addEventListener('load', function() {
+      checkPWAStatus();
+      checkServiceWorker();
+    });
+    
+    // Also check when display mode changes
+    window.addEventListener('DOMContentLoaded', function() {
+      window.matchMedia('(display-mode: standalone)').addListener(function() {
+        checkPWAStatus();
+      });
+    });
+  </script>
+</body>
+</html>

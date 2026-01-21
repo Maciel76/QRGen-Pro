@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Gerador de Ícones QRGen Pro</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      text-align: center;
+    }
+    .icon-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 20px;
+    }
+    .icon-item {
+      text-align: center;
+    }
+    canvas {
+      border: 1px solid #ccc;
+      margin-bottom: 10px;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 10px;
+      background: #6366f1;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Gerador de Ícones QRGen Pro</h1>
+  <p>Este utilitário gera os ícones necessários para o PWA</p>
+  
+  <div class="icon-container">
+    <div class="icon-item">
+      <canvas id="icon192" width="192" height="192"></canvas>
+      <p>192x192</p>
+      <button onclick="downloadIcon('icon192', 'android-chrome-192x192.png')">Baixar</button>
+    </div>
+    <div class="icon-item">
+      <canvas id="icon512" width="512" height="512"></canvas>
+      <p>512x512</p>
+      <button onclick="downloadIcon('icon512', 'android-chrome-512x512.png')">Baixar</button>
+    </div>
+    <div class="icon-item">
+      <canvas id="appleIcon" width="180" height="180"></canvas>
+      <p>Apple Touch Icon</p>
+      <button onclick="downloadIcon('appleIcon', 'apple-touch-icon.png')">Baixar</button>
+    </div>
+    <div class="icon-item">
+      <canvas id="favicon32" width="32" height="32"></canvas>
+      <p>Favicon 32x32</p>
+      <button onclick="downloadIcon('favicon32', 'favicon-32x32.png')">Baixar</button>
+    </div>
+    <div class="icon-item">
+      <canvas id="favicon16" width="16" height="16"></canvas>
+      <p>Favicon 16x16</p>
+      <button onclick="downloadIcon('favicon16', 'favicon-16x16.png')">Baixar</button>
+    </div>
+  </div>
+
+  <script>
+    // Função para desenhar o ícone do QRGen Pro
+    function drawIcon(canvasId, size) {
+      const canvas = document.getElementById(canvasId);
+      const ctx = canvas.getContext('2d');
+      
+      // Fundo gradiente
+      const gradient = ctx.createLinearGradient(0, 0, size, size);
+      gradient.addColorStop(0, '#6366f1');
+      gradient.addColorStop(1, '#4f46e5');
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, size, size);
+      
+      // Desenha um QR code simplificado
+      ctx.fillStyle = 'white';
+      // Quadrados externos
+      for (let x = 0; x < 7; x++) {
+        for (let y = 0; y < 7; y++) {
+          if ((x < 3 || x > 3) && (y < 3 || y > 3)) continue;
+          ctx.fillRect(x * (size/21), y * (size/21), size/21, size/21);
+        }
+      }
+      
+      // Quadrados internos
+      for (let x = 2; x < 5; x++) {
+        for (let y = 2; y < 5; y++) {
+          ctx.fillRect(x * (size/21), y * (size/21), size/21, size/21);
+        }
+      }
+      
+      // Mais quadrados aleatórios para simular um QR code
+      for (let i = 0; i < 20; i++) {
+        const rx = Math.floor(Math.random() * 15) + 3;
+        const ry = Math.floor(Math.random() * 15) + 3;
+        ctx.fillRect(rx * (size/21), ry * (size/21), size/21, size/21);
+      }
+      
+      // Desenha o texto "QR" no centro
+      ctx.font = `${size/8}px Arial`;
+      ctx.fillStyle = 'white';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('QR', size/2, size/2);
+    }
+    
+    // Desenha todos os ícones
+    drawIcon('icon192', 192);
+    drawIcon('icon512', 512);
+    drawIcon('appleIcon', 180);
+    drawIcon('favicon32', 32);
+    drawIcon('favicon16', 16);
+    
+    // Função para baixar o ícone
+    function downloadIcon(canvasId, filename) {
+      const canvas = document.getElementById(canvasId);
+      const link = document.createElement('a');
+      link.download = filename;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+  </script>
+</body>
+</html>
