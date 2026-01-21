@@ -2,7 +2,7 @@
   "name": "QRGen Pro - Gerador de QR Codes",
   "short_name": "QRGen Pro",
   "description": "Aplicativo para geração de QR Codes para produtos e inventário",
-  "start_url": "./index-vue.html",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#f0f4ff",
   "theme_color": "#6366f1",

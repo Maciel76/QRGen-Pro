@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gerar Ícones PWA - QRGen Pro</title>
+    <style>
+      body {
+        font-family: "Arial", sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 20px;
+      }
+      .container {
+        background: white;
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        max-width: 600px;
+        text-align: center;
+      }
+      h1 {
+        color: #333;
+        margin-bottom: 20px;
+      }
+      .icon-preview {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin: 30px 0;
+      }
+      .icon-container {
+        text-align: center;
+      }
+      canvas {
+        border: 2px solid #ddd;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      button {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 15px 30px;
+        font-size: 16px;
+        border-radius: 10px;
+        cursor: pointer;
+        margin: 10px;
+        transition: transform 0.2s;
+      }
+      button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+      }
+      .instructions {
+        background: #f0f4ff;
+        padding: 20px;
+        border-radius: 10px;
+        margin-top: 20px;
+        text-align: left;
+      }
+      .instructions h3 {
+        color: #667eea;
+        margin-top: 0;
+      }
+      .instructions ol {
+        padding-left: 20px;
+      }
+      .instructions li {
+        margin: 10px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>🎨 Gerador de Ícones PWA</h1>
+      <p>Clique nos botões abaixo para gerar e baixar os ícones do QRGen Pro</p>
+
+      <div class="icon-preview">
+        <div class="icon-container">
+          <canvas id="icon-16" width="16" height="16"></canvas>
+          <p>16x16</p>
+        </div>
+        <div class="icon-container">
+          <canvas id="icon-32" width="32" height="32"></canvas>
+          <p>32x32</p>
+        </div>
+        <div class="icon-container">
+          <canvas id="icon-180" width="180" height="180"></canvas>
+          <p>180x180 (Apple)</p>
+        </div>
+        <div class="icon-container">
+          <canvas id="icon-192" width="192" height="192"></canvas>
+          <p>192x192 (Android)</p>
+        </div>
+        <div class="icon-container">
+          <canvas id="icon-512" width="512" height="512"></canvas>
+          <p>512x512 (Android)</p>
+        </div>
+      </div>
+
+      <button onclick="generateAllIcons()">🎨 Gerar Todos os Ícones</button>
+      <button onclick="downloadAll()">⬇️ Baixar Todos</button>
+
+      <div class="instructions">
+        <h3>📋 Instruções:</h3>
+        <ol>
+          <li>
+            Clique em "<strong>Gerar Todos os Ícones</strong>" para criar os
+            ícones
+          </li>
+          <li>
+            Clique em "<strong>Baixar Todos</strong>" para fazer o download
+          </li>
+          <li>
+            Extraia os arquivos baixados para a pasta <code>assets/icons/</code>
+          </li>
+          <li>Recarregue o site principal e teste a instalação do PWA</li>
+        </ol>
+        <p>
+          <strong>Dica:</strong> Para usar seu próprio logo, substitua os
+          arquivos gerados por suas imagens personalizadas (mantendo os mesmos
+          nomes e tamanhos).
+        </p>
+      </div>
+    </div>
+
+    <script>
+      function drawIcon(canvas, size) {
+        const ctx = canvas.getContext("2d");
+        const scale = size / 512;
+
+        // Fundo gradiente
+        const gradient = ctx.createLinearGradient(0, 0, size, size);
+        gradient.addColorStop(0, "#6366f1");
+        gradient.addColorStop(1, "#4f46e5");
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, size, size);
+
+        // Desenhar QR Code estilizado
+        const qrSize = size * 0.6;
+        const qrX = (size - qrSize) / 2;
+        const qrY = (size - qrSize) / 2;
+
+        ctx.fillStyle = "white";
+
+        // Cantos do QR (quadrados)
+        const cornerSize = qrSize * 0.25;
+        const cornerInner = cornerSize * 0.4;
+
+        // Canto superior esquerdo
+        ctx.fillRect(qrX, qrY, cornerSize, cornerSize);
+        ctx.fillStyle = "#6366f1";
+        ctx.fillRect(
+          qrX + cornerInner * 0.6,
+          qrY + cornerInner * 0.6,
+          cornerInner,
+          cornerInner,
+        );
+
+        // Canto superior direito
+        ctx.fillStyle = "white";
+        ctx.fillRect(qrX + qrSize - cornerSize, qrY, cornerSize, cornerSize);
+        ctx.fillStyle = "#6366f1";
+        ctx.fillRect(
+          qrX + qrSize - cornerSize + cornerInner * 0.6,
+          qrY + cornerInner * 0.6,
+          cornerInner,
+          cornerInner,
+        );
+
+        // Canto inferior esquerdo
+        ctx.fillStyle = "white";
+        ctx.fillRect(qrX, qrY + qrSize - cornerSize, cornerSize, cornerSize);
+        ctx.fillStyle = "#6366f1";
+        ctx.fillRect(
+          qrX + cornerInner * 0.6,
+          qrY + qrSize - cornerSize + cornerInner * 0.6,
+          cornerInner,
+          cornerInner,
+        );
+
+        // Módulos aleatórios (padrão QR)
+        ctx.fillStyle = "white";
+        const moduleSize = qrSize * 0.08;
+        const modules = [
+          [3, 3],
+          [4, 3],
+          [5, 3],
+          [3, 4],
+          [5, 4],
+          [3, 5],
+          [4, 5],
+          [5, 5],
+          [7, 3],
+          [7, 4],
+          [7, 5],
+          [3, 7],
+          [4, 7],
+          [5, 7],
+        ];
+
+        modules.forEach(([row, col]) => {
+          ctx.fillRect(
+            qrX + col * moduleSize,
+            qrY + row * moduleSize,
+            moduleSize * 0.8,
+            moduleSize * 0.8,
+          );
+        });
+      }
+
+      function generateAllIcons() {
+        const sizes = [16, 32, 180, 192, 512];
+        sizes.forEach((size) => {
+          const canvas = document.getElementById(`icon-${size}`);
+          drawIcon(canvas, size);
+        });
+        alert('✅ Ícones gerados! Agora clique em "Baixar Todos"');
+      }
+
+      function downloadCanvas(canvas, filename) {
+        canvas.toBlob((blob) => {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = filename;
+          a.click();
+          URL.revokeObjectURL(url);
+        });
+      }
+
+      function downloadAll() {
+        const downloads = [
+          { size: 16, name: "favicon-16x16.png" },
+          { size: 32, name: "favicon-32x32.png" },
+          { size: 180, name: "apple-touch-icon.png" },
+          { size: 192, name: "android-chrome-192x192.png" },
+          { size: 512, name: "android-chrome-512x512.png" },
+        ];
+
+        downloads.forEach((item, index) => {
+          setTimeout(() => {
+            const canvas = document.getElementById(`icon-${item.size}`);
+            downloadCanvas(canvas, item.name);
+          }, index * 500); // Delay entre downloads
+        });
+
+        alert(
+          "📥 Downloads iniciados! Salve todos os arquivos na pasta assets/icons/",
+        );
+      }
+
+      // Gerar ícones automaticamente ao carregar
+      window.addEventListener("load", generateAllIcons);
+    </script>
+  </body>
+</html>

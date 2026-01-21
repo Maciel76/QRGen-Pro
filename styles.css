@@ -114,8 +114,42 @@ body.dark-mode {
   font-weight: 300;
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  z-index: 2;
+}
+
+.btn-install {
+  background: rgba(255, 255, 255, 0.95);
+  color: var(--primary);
+  border: none;
+  padding: 12px 20px;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  transition: var(--transition);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  font-family: "Poppins", sans-serif;
+}
+
+.btn-install:hover {
+  background: white;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn-install i {
+  font-size: 1.1rem;
+}
+
 .theme-toggle {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(209, 211, 203, 0.2);
   width: 50px;
   height: 50px;
   border-radius: 50%;
