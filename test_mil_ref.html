@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Mil Ref</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        textarea, input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Teste Funcionalidade Mil Ref</h1>
+        
+        <div class="input-group">
+            <label for="dadosEntrada">Dados de Entrada (código;nome;quantidade):</label>
+            <textarea id="dadosEntrada" rows="5" placeholder="Ex: PROD001;Produto A;10&#10;PROD002;Produto B;5"></textarea>
+        </div>
+        
+        <button onclick="adicionarMilRef()">Adicionar Sufixo '0001'</button>
+        <button onclick="limpar()">Limpar</button>
+        
+        <div class="result">
+            <h3>Resultado:</h3>
+            <textarea id="dadosSaida" rows="5" readonly></textarea>
+        </div>
+    </div>
+
+    <script>
+        function adicionarMilRef() {
+            const entrada = document.getElementById('dadosEntrada').value;
+            if (!entrada.trim()) {
+                alert('Por favor, insira os dados de entrada.');
+                return;
+            }
+            
+            // Processar os dados
+            const linhas = entrada.split('\n');
+            const resultado = [];
+            
+            for (const linha of linhas) {
+                if (linha.trim() === '') continue;
+                
+                const partes = linha.split(';');
+                if (partes.length >= 3) {
+                    const codigo = partes[0];
+                    const nome = partes[1];
+                    const quantidade = partes[2];
+                    
+                    // Adiciona o sufixo '0001' ao código
+                    const novoCodigo = codigo + '0001';
+                    resultado.push(`${novoCodigo};${nome};${quantidade}`);
+                }
+            }
+            
+            document.getElementById('dadosSaida').value = resultado.join('\n');
+        }
+        
+        function limpar() {
+            document.getElementById('dadosEntrada').value = '';
+            document.getElementById('dadosSaida').value = '';
+        }
+    </script>
+</body>
+</html>

@@ -412,6 +412,134 @@ textarea:focus {
   color: var(--text-primary);
 }
 
+/* Toggle Button na área de ações - Mil de Referência */
+.btn-toggle-action {
+  padding: 14px 24px;
+  border: 2px solid #d1d5db;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  font-family: "Poppins", sans-serif;
+  background: #e5e7eb;
+  color: #6b7280;
+}
+
+.btn-toggle-action i {
+  font-size: 1.2rem;
+}
+
+.btn-toggle-action .toggle-status {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.1);
+  margin-left: auto;
+}
+
+.btn-toggle-action[data-active="true"] {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+  border-color: #2563eb;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.5);
+  transform: translateY(-2px);
+}
+
+.btn-toggle-action[data-active="true"] .toggle-status {
+  background: rgba(255, 255, 255, 0.3);
+  color: white;
+}
+
+.btn-toggle-action:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+.btn-toggle-action:active {
+  transform: translateY(0);
+}
+
+body.dark-mode .btn-toggle-action {
+  background: #374151;
+  color: #d1d5db;
+  border-color: #4b5563;
+}
+
+body.dark-mode .btn-toggle-action[data-active="true"] {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+  border-color: #2563eb;
+}
+
+/* Toggle Button for Mil de Referência */
+.btn-toggle {
+  width: 100%;
+  background: #e5e7eb;
+  color: #6b7280;
+  border: 2px solid #d1d5db;
+  padding: 16px 20px;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  font-family: "Poppins", sans-serif;
+}
+
+.btn-toggle i {
+  font-size: 1.2rem;
+}
+
+.btn-toggle .toggle-status {
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 20px;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.btn-toggle[data-active="true"] {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+  border-color: #2563eb;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+  transform: translateY(-1px);
+}
+
+.btn-toggle[data-active="true"] .toggle-status {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.btn-toggle:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+.btn-toggle:active {
+  transform: translateY(0);
+}
+
+body.dark-mode .btn-toggle {
+  background: #374151;
+  color: #d1d5db;
+  border-color: #4b5563;
+}
+
+body.dark-mode .btn-toggle[data-active="true"] {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+  border-color: #2563eb;
+}
+
 /* Status */
 .status {
   margin: 0 25px 25px;

@@ -46,6 +46,32 @@ function normalize(rows, { dedup = true }) {
   return [...map.values()];
 }
 
+// Função para expandir códigos com mil de referência
+function expandWithMilRef(rows) {
+  const expanded = [];
+
+  for (const row of rows) {
+    const quantidade = parseInt(row.quantidade) || 1;
+
+    // Se quantidade > 0, criar múltiplos códigos com sufixo
+    if (quantidade > 0) {
+      for (let i = 1; i <= quantidade; i++) {
+        const suffix = String(i).padStart(4, "0"); // 0001, 0002, etc
+        expanded.push({
+          codigo: row.codigo + suffix,
+          nome: row.nome,
+          quantidade: `${i}/${quantidade}`,
+        });
+      }
+    } else {
+      // Se não tem quantidade, adiciona apenas o código original
+      expanded.push(row);
+    }
+  }
+
+  return expanded;
+}
+
 function renderTable(rows, opts) {
   const tbody = document.querySelector("#grid tbody");
   tbody.innerHTML = "";
@@ -126,6 +152,25 @@ function loadFromLocalStorage() {
       document.getElementById("dedup").checked = preferences.dedup;
     }
 
+    if (preferences.addMilRef !== undefined) {
+      const milRefBtn = document.getElementById("addMilRef");
+      if (milRefBtn) {
+        milRefBtn.setAttribute("data-active", preferences.addMilRef);
+        const textSpan = document.getElementById("milRefText");
+        if (textSpan) {
+          textSpan.textContent = preferences.addMilRef
+            ? "Mil de Ref: ON"
+            : "Mil de Ref: OFF";
+        }
+        if (preferences.addMilRef) {
+          milRefBtn.style.background =
+            "linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)";
+          milRefBtn.style.color = "white";
+          milRefBtn.style.boxShadow = "0 4px 12px rgba(59, 130, 246, 0.5)";
+        }
+      }
+    }
+
     if (preferences.inputData) {
       document.getElementById("input").value = preferences.inputData;
     }
@@ -149,6 +194,9 @@ function saveToLocalStorage() {
     qrSize: parseInt(document.getElementById("qrSize").value, 10) || 120,
     qrEcc: document.getElementById("qrEcc").value || "M",
     dedup: document.getElementById("dedup").checked,
+    addMilRef:
+      document.getElementById("addMilRef").getAttribute("data-active") ===
+      "true",
     inputData: document.getElementById("input").value,
     qrColor: document.getElementById("qrColor").value || "#000000",
   };
@@ -157,7 +205,7 @@ function saveToLocalStorage() {
     localStorage.setItem("qrPreferences", JSON.stringify(preferences));
     localStorage.setItem(
       "darkMode",
-      document.body.classList.contains("dark-mode")
+      document.body.classList.contains("dark-mode"),
     );
   } catch (error) {
     console.error("Erro ao salvar preferências:", error);
@@ -173,7 +221,7 @@ function handleCsvUpload(file) {
       if (results.errors.length > 0) {
         showStatus(
           "Erro ao processar CSV: " + results.errors[0].message,
-          "error"
+          "error",
         );
         return;
       }
@@ -191,7 +239,7 @@ function handleCsvUpload(file) {
             (key) =>
               key.toLowerCase().includes("cod") ||
               key.toLowerCase().includes("code") ||
-              key.toLowerCase().includes("id")
+              key.toLowerCase().includes("id"),
           );
           codigo = codKey ? row[codKey] : "";
 
@@ -201,7 +249,7 @@ function handleCsvUpload(file) {
               key.toLowerCase().includes("nome") ||
               key.toLowerCase().includes("name") ||
               key.toLowerCase().includes("prod") ||
-              key.toLowerCase().includes("desc")
+              key.toLowerCase().includes("desc"),
           );
           nome = nomeKey ? row[nomeKey] : "";
 
@@ -211,7 +259,7 @@ function handleCsvUpload(file) {
               key.toLowerCase().includes("qt") ||
               key.toLowerCase().includes("quant") ||
               key.toLowerCase().includes("qtd") ||
-              key.toLowerCase().includes("quantity")
+              key.toLowerCase().includes("quantity"),
           );
           quantidade = qtKey ? row[qtKey] : "";
 
@@ -242,9 +290,22 @@ function handleCsvUpload(file) {
           parseInt(document.getElementById("qrSize").value, 10) || 120;
         const ecc = document.getElementById("qrEcc").value || "M";
         const dedup = document.getElementById("dedup").checked;
+        const addMilRef =
+          document.getElementById("addMilRef").getAttribute("data-active") ===
+          "true";
         const color = document.getElementById("qrColor").value || "#000000";
 
-        const normalizedRows = normalize(rows, { dedup });
+        let processedRows = rows;
+
+        // Aplicar Mil de Referência se estiver ativado
+        if (addMilRef) {
+          processedRows = processedRows.map(row => ({
+            ...row,
+            codigo: row.codigo + "0001"  // Adiciona sempre "0001" ao código
+          }));
+        }
+
+        const normalizedRows = normalize(processedRows, { dedup });
 
         // Verificar qual visualização está ativa
         const activeView = document.querySelector(".view-toggle button.active")
@@ -350,9 +411,22 @@ function setupViewToggle() {
           parseInt(document.getElementById("qrSize").value, 10) || 120;
         const ecc = document.getElementById("qrEcc").value || "M";
         const dedup = document.getElementById("dedup").checked;
+        const addMilRef =
+          document.getElementById("addMilRef").getAttribute("data-active") ===
+          "true";
         const color = document.getElementById("qrColor").value || "#000000";
 
-        const rows = normalize(parseText(text), { dedup });
+        let rows = parseText(text);
+
+        // Aplicar Mil de Referência se estiver ativado
+        if (addMilRef) {
+          rows = rows.map(row => ({
+            ...row,
+            codigo: row.codigo + "0001"  // Adiciona sempre "0001" ao código
+          }));
+        }
+
+        rows = normalize(rows, { dedup });
 
         if (viewType === "cards") {
           renderQRCards(rows, { size, ecc, color });
@@ -385,6 +459,75 @@ function setupThemeToggle() {
   });
 }
 
+// Configurar botão toggle de Mil de Referência
+function setupMilRefToggle() {
+  const milRefBtn = document.getElementById("addMilRef");
+
+  if (!milRefBtn) {
+    console.error("Botão addMilRef não encontrado!");
+    return;
+  }
+
+  milRefBtn.addEventListener("click", function () {
+    const textArea = document.getElementById("input");
+    const text = textArea.value.trim();
+
+    if (!text) {
+      showStatus(
+        "Por favor, insira alguns dados primeiro antes de aplicar Mil de Referência",
+        "error",
+      );
+      return;
+    }
+
+    try {
+      // Parsear os dados
+      const rows = parseText(text);
+
+      // Adicionar sufixo "0001" a todos os códigos
+      const updatedLines = [];
+
+      for (const row of rows) {
+        const newCodigo = row.codigo + "0001";  // Adiciona sempre "0001" ao código
+        updatedLines.push(`${newCodigo};${row.nome};${row.quantidade}`);
+      }
+
+      // Atualizar o campo de texto
+      textArea.value = updatedLines.join("\n");
+
+      // Feedback visual
+      this.style.background = "linear-gradient(135deg, #10b981 0%, #059669 100%)";
+      this.style.color = "white";
+      this.style.boxShadow = "0 4px 12px rgba(16, 185, 129, 0.5)";
+
+      const textSpan = document.getElementById("milRefText");
+      if (textSpan) {
+        textSpan.textContent = "✓ Aplicado!";
+      }
+
+      showStatus(
+        `Sufixo "0001" adicionado a ${updatedLines.length} códigos`,
+        "success",
+      );
+
+      // Resetar visual após 2 segundos
+      setTimeout(() => {
+        this.style.background = "";
+        this.style.color = "";
+        this.style.boxShadow = "";
+        if (textSpan) {
+          textSpan.textContent = "Aplicar Mil de Ref";
+        }
+      }, 2000);
+
+      saveToLocalStorage();
+    } catch (error) {
+      showStatus("Erro ao processar dados: " + error.message, "error");
+      console.error(error);
+    }
+  });
+}
+
 // Modificar o evento DOMContentLoaded
 document.addEventListener("DOMContentLoaded", function () {
   // Carregar preferências salvas
@@ -396,12 +539,18 @@ document.addEventListener("DOMContentLoaded", function () {
   // Configurar toggle de tema
   setupThemeToggle();
 
+  // Configurar toggle de Mil de Referência
+  setupMilRefToggle();
+
   // Botão Gerar
   document.getElementById("generate").addEventListener("click", function () {
     const text = document.getElementById("input").value;
     const size = parseInt(document.getElementById("qrSize").value, 10) || 120;
     const ecc = document.getElementById("qrEcc").value || "M";
     const dedup = document.getElementById("dedup").checked;
+    const addMilRef =
+      document.getElementById("addMilRef").getAttribute("data-active") ===
+      "true";
     const color = document.getElementById("qrColor").value || "#000000";
 
     if (!text.trim()) {
@@ -410,7 +559,18 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     try {
-      const rows = normalize(parseText(text), { dedup });
+      let rows = parseText(text);
+
+      // Aplicar Mil de Referência se estiver ativado
+      if (addMilRef) {
+        rows = rows.map(row => ({
+          ...row,
+          codigo: row.codigo + "0001"  // Adiciona sempre "0001" ao código
+        }));
+      }
+
+      // Normalizar os dados (deduplicar se necessário)
+      rows = normalize(rows, { dedup });
 
       // Verificar qual visualização está ativa
       const activeView = document.querySelector(".view-toggle button.active")
@@ -514,7 +674,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // Botão de ajuda
   document.querySelector(".btn-help").addEventListener("click", function () {
     alert(
-      "Para usar o QRGen Pro:\n\n1. Cole os dados no formato: código;nome;quantidade (um por linha)\n2. Ou faça upload de um arquivo CSV\n3. Ajuste as opções conforme necessário\n4. Clique em 'Gerar QR Codes'\n5. Use os botões de visualização para alternar entre cards e tabela"
+      "Para usar o QRGen Pro:\n\n1. Cole os dados no formato: código;nome;quantidade (um por linha)\n2. Ou faça upload de um arquivo CSV\n3. Ajuste as opções conforme necessário\n4. Clique em 'Gerar QR Codes'\n5. Use os botões de visualização para alternar entre cards e tabela",
     );
   });
 });
