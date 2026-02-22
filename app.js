@@ -528,6 +528,77 @@ function setupMilRefToggle() {
   });
 }
 
+// Configurar botão Aplica Quantidade
+function setupApplyQuantity() {
+  const applyQtyBtn = document.getElementById("applyQuantity");
+
+  if (!applyQtyBtn) {
+    console.error("Botão applyQuantity não encontrado!");
+    return;
+  }
+
+  applyQtyBtn.addEventListener("click", function () {
+    const textArea = document.getElementById("input");
+    const text = textArea.value.trim();
+
+    if (!text) {
+      showStatus(
+        "Por favor, insira alguns dados primeiro antes de aplicar quantidade",
+        "error",
+      );
+      return;
+    }
+
+    try {
+      // Parsear os dados
+      const rows = parseText(text);
+
+      // Adicionar sufixo da quantidade a cada código
+      const updatedLines = [];
+
+      for (const row of rows) {
+        const quantidade = parseInt(row.quantidade) || 0;
+        const suffix = String(quantidade).padStart(4, "0");
+        const newCodigo = row.codigo + suffix;
+        updatedLines.push(`${newCodigo};${row.nome};${row.quantidade}`);
+      }
+
+      // Atualizar o campo de texto
+      textArea.value = updatedLines.join("\n");
+
+      // Feedback visual
+      applyQtyBtn.style.background = "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)";
+      applyQtyBtn.style.color = "white";
+      applyQtyBtn.style.boxShadow = "0 4px 12px rgba(245, 158, 11, 0.5)";
+
+      const textSpan = document.getElementById("applyQuantityText");
+      if (textSpan) {
+        textSpan.textContent = "✓ Aplicado!";
+      }
+
+      showStatus(
+        `Quantidade aplicada a ${updatedLines.length} códigos`,
+        "success",
+      );
+
+      // Resetar visual após 2 segundos
+      setTimeout(() => {
+        applyQtyBtn.style.background = "";
+        applyQtyBtn.style.color = "";
+        applyQtyBtn.style.boxShadow = "";
+        if (textSpan) {
+          textSpan.textContent = "Aplica Quantidade";
+        }
+      }, 2000);
+
+      saveToLocalStorage();
+    } catch (error) {
+      showStatus("Erro ao processar dados: " + error.message, "error");
+      console.error(error);
+    }
+  });
+}
+
 // Modificar o evento DOMContentLoaded
 document.addEventListener("DOMContentLoaded", function () {
   // Carregar preferências salvas
@@ -541,6 +612,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Configurar toggle de Mil de Referência
   setupMilRefToggle();
+
+  // Configurar botão Aplica Quantidade
+  setupApplyQuantity();
 
   // Botão Gerar
   document.getElementById("generate").addEventListener("click", function () {
