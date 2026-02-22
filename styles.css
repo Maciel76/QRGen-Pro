@@ -835,6 +835,36 @@ body.dark-mode .btn-toggle[data-active="true"] {
   box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
 }
 
+.btn-economic {
+  background-color: var(--light);
+  color: var(--text-secondary);
+  border: 2px solid #22c55e;
+  padding: 12px 20px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: var(--transition);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.btn-economic:hover {
+  background: #dcfce7;
+  border-color: #16a34a;
+  color: #16a34a;
+  transform: translateY(-2px);
+}
+
+.btn-economic.active {
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  color: white;
+  border-color: #16a34a;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.4);
+}
+
 .results-info {
   display: flex;
   align-items: center;
@@ -890,6 +920,69 @@ body.dark-mode .btn-toggle[data-active="true"] {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 25px;
+}
+
+/* Modo Econômico */
+.qr-grid.economic-mode {
+  grid-template-columns: repeat(8, 1fr);
+  gap: 6px;
+}
+
+.qr-grid.economic-mode .eco-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 4px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--card-bg);
+  text-align: center;
+  overflow: hidden;
+}
+
+.qr-grid.economic-mode .eco-qr {
+  padding: 2px;
+}
+
+.qr-grid.economic-mode .eco-qr .qrbox {
+  width: 64px !important;
+  height: 64px !important;
+  min-width: 64px;
+  min-height: 64px;
+}
+
+.qr-grid.economic-mode .eco-qr .qrbox img,
+.qr-grid.economic-mode .eco-qr .qrbox canvas {
+  width: 64px !important;
+  height: 64px !important;
+}
+
+.qr-grid.economic-mode .eco-label {
+  font-size: 0.6rem;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--text-primary);
+  word-break: break-all;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-top: 2px;
+}
+
+.qr-grid.economic-mode .eco-name {
+  font-size: 0.55rem;
+  color: var(--text-secondary);
+  line-height: 1.1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+/* Cards normais não aparecem no modo econômico */
+.qr-grid.economic-mode .qr-card {
+  display: none;
 }
 
 .qr-card {
@@ -1181,6 +1274,11 @@ tr:hover {
     grid-template-columns: 1fr;
   }
 
+  .qr-grid.economic-mode {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4px;
+  }
+
   th,
   td {
     padding: 12px 10px;
@@ -1229,6 +1327,11 @@ tr:hover {
 
 /* Modo de impressão */
 @media print {
+  @page {
+    size: A4 portrait;
+    margin: 3mm;
+  }
+
   body * {
     visibility: hidden;
   }
@@ -1298,13 +1401,76 @@ tr:hover {
   .qr-details p {
     font-size: 0.65rem;
     margin-bottom: 3px;
-    line-height: 1.2;
   }
 
   .qr-details .quantity {
-    font-size: 0.65rem;
+    font-size: 0.6rem;
     padding: 2px 6px;
-    margin-top: 2px;
+  }
+
+  /* ===== MODO ECONÔMICO DE IMPRESSÃO ===== */
+  /* Layout ultra-compacto: 8 colunas, ~40+ QR codes por folha A4 */
+  .qr-grid.economic-mode {
+    grid-template-columns: repeat(8, 1fr) !important;
+    gap: 1mm !important;
+    padding: 0 !important;
+  }
+
+  .qr-grid.economic-mode .eco-item {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    padding: 1mm !important;
+    border: 0.3mm solid #999 !important;
+    border-radius: 0 !important;
+    background: white !important;
+    text-align: center !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    overflow: hidden !important;
+  }
+
+  .qr-grid.economic-mode .eco-qr {
+    padding: 0 !important;
+  }
+
+  .qr-grid.economic-mode .eco-qr .qrbox {
+    width: 18mm !important;
+    height: 18mm !important;
+    min-width: 18mm !important;
+    min-height: 18mm !important;
+  }
+
+  .qr-grid.economic-mode .eco-qr .qrbox img,
+  .qr-grid.economic-mode .eco-qr .qrbox canvas {
+    width: 18mm !important;
+    height: 18mm !important;
+  }
+
+  .qr-grid.economic-mode .eco-label {
+    font-size: 5pt !important;
+    font-weight: 700 !important;
+    line-height: 1 !important;
+    margin-top: 0.5mm !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+
+  .qr-grid.economic-mode .eco-name {
+    font-size: 4pt !important;
+    line-height: 1 !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    color: #333 !important;
+  }
+
+  /* Esconder itens de card no modo econômico na impressão */
+  .qr-grid.economic-mode .qr-card {
+    display: none !important;
   }
 
   /* Impressão de visualização em tabela */
@@ -1341,10 +1507,5 @@ tr:hover {
   .qr-container canvas {
     width: 50px !important;
     height: 50px !important;
-  }
-
-  @page {
-    size: A4;
-    margin: 8mm;
   }
 }

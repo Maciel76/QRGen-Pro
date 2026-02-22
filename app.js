@@ -332,6 +332,9 @@ function handleCsvUpload(file) {
 function renderQRCards(rows, opts) {
   const qrGrid = document.querySelector(".qr-grid");
   qrGrid.innerHTML = "";
+  
+  // Remover classe de modo econômico se existir
+  qrGrid.classList.remove("economic-mode");
 
   for (const r of rows) {
     const card = document.createElement("div");
@@ -388,6 +391,64 @@ function renderQRCards(rows, opts) {
   }
 }
 
+// Função para renderizar QR Codes em modo econômico
+function renderQREconomic(rows, opts) {
+  const qrGrid = document.querySelector(".qr-grid");
+  qrGrid.innerHTML = "";
+  
+  // Adicionar classe de modo econômico
+  qrGrid.classList.add("economic-mode");
+
+  for (const r of rows) {
+    // Truncar nome a 15 caracteres
+    const nomeShort = r.nome.length > 15 ? r.nome.substring(0, 15) + "…" : r.nome;
+    
+    const item = document.createElement("div");
+    item.className = "eco-item";
+    item.innerHTML = `
+      <div class="eco-qr"><div class="qrbox"></div></div>
+      <div class="eco-label">${r.codigo}</div>
+      <div class="eco-name">${nomeShort}</div>
+    `;
+    qrGrid.appendChild(item);
+
+    // Gerar QR Code compacto para modo econômico
+    const box = item.querySelector(".qrbox");
+    try {
+      if (!r.codigo || r.codigo.trim() === "") {
+        throw new Error("Código vazio");
+      }
+
+      new QRCode(box, {
+        text: r.codigo,
+        width: 64,
+        height: 64,
+        correctLevel: QRCode.CorrectLevel[opts.ecc],
+        colorDark: opts.color || "#000000",
+        margin: 0,
+      });
+    } catch (error) {
+      console.error("Erro ao gerar QR Code para", r.codigo, error);
+      box.innerHTML = `<span class="error">Erro</span>`;
+    }
+  }
+
+  // Mostrar/ocultar grid e estado vazio
+  const qrGridContainer = document.getElementById("qr-grid-container");
+  const tableContainer = document.getElementById("table-container");
+  const emptyState = document.getElementById("empty-state");
+
+  if (rows.length > 0) {
+    qrGridContainer.style.display = "block";
+    tableContainer.style.display = "none";
+    emptyState.style.display = "none";
+    updateResultsCount(rows.length);
+  } else {
+    qrGridContainer.style.display = "none";
+    emptyState.style.display = "block";
+  }
+}
+
 function updateResultsCount(count) {
   document.getElementById("results-count").textContent = `${count} ${
     count === 1 ? "item" : "itens"
@@ -396,7 +457,7 @@ function updateResultsCount(count) {
 
 // Adicionar toggle de visualização
 function setupViewToggle() {
-  const toggleButtons = document.querySelectorAll(".view-toggle button");
+  const toggleButtons = document.querySelectorAll(".view-toggle .view-btn, .view-toggle .btn-economic");
   toggleButtons.forEach((button) => {
     button.addEventListener("click", function () {
       // Remover classe active de todos os botões
@@ -434,6 +495,8 @@ function setupViewToggle() {
 
         if (viewType === "cards") {
           renderQRCards(rows, { size, ecc, color });
+        } else if (viewType === "economic") {
+          renderQREconomic(rows, { size, ecc, color });
         } else {
           renderTable(rows, { size, ecc, color });
         }
@@ -443,9 +506,10 @@ function setupViewToggle() {
 
   // Carregar visualização preferida
   const preferredView = localStorage.getItem("preferredView") || "cards";
-  document
-    .querySelector(`.view-toggle button[data-view="${preferredView}"]`)
-    .classList.add("active");
+  const preferredBtn = document.querySelector(`.view-toggle [data-view="${preferredView}"]`);
+  if (preferredBtn) {
+    preferredBtn.classList.add("active");
+  }
 }
 
 // Configurar tema claro/escuro
@@ -660,6 +724,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
       if (activeView === "cards") {
         renderQRCards(rows, { size, ecc, color });
+      } else if (activeView === "economic") {
+        renderQREconomic(rows, { size, ecc, color });
       } else {
         renderTable(rows, { size, ecc, color });
       }
@@ -688,9 +754,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const text = document.getElementById("input").value.trim();
     const hasTableRows = document.querySelectorAll("#grid tbody tr").length > 0;
     const hasCards = document.querySelectorAll(".qr-card").length > 0;
+    const hasEcoItems = document.querySelectorAll(".eco-item").length > 0;
     const hasFileName = document.getElementById("file-name").textContent !== "Nenhum arquivo selecionado";
     
-    return text || hasTableRows || hasCards || hasFileName;
+    return text || hasTableRows || hasCards || hasEcoItems || hasFileName;
   }
 
   // Função para atualizar estado do botão Limpar
@@ -704,7 +771,8 @@ document.addEventListener("DOMContentLoaded", function () {
   function updatePrintButton() {
     const printBtn = document.getElementById("print-btn");
     const hasQRCodes = document.querySelectorAll("#grid tbody tr").length > 0 ||
-                       document.querySelectorAll(".qr-card").length > 0;
+                       document.querySelectorAll(".qr-card").length > 0 ||
+                       document.querySelectorAll(".eco-item").length > 0;
 
     printBtn.disabled = !hasQRCodes;
   }
