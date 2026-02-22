@@ -317,6 +317,10 @@ function handleCsvUpload(file) {
           renderTable(normalizedRows, { size, ecc, color });
         }
       }
+      
+      // Atualizar estado dos botões
+      updateClearButton();
+      updatePrintButton();
     },
     error: function (error) {
       showStatus("Erro ao ler arquivo: " + error.message, "error");
@@ -616,6 +620,10 @@ document.addEventListener("DOMContentLoaded", function () {
   // Configurar botão Aplica Quantidade
   setupApplyQuantity();
 
+  // Inicializar estado dos botões
+  updateClearButton();
+  updatePrintButton();
+
   // Botão Gerar
   document.getElementById("generate").addEventListener("click", function () {
     const text = document.getElementById("input").value;
@@ -658,6 +666,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
       showStatus(`Gerados ${rows.length} QR Codes`, "success");
 
+      // Atualizar estado dos botões
+      updateClearButton();
+      updatePrintButton();
+
       // Salvar preferências
       saveToLocalStorage();
     } catch (error) {
@@ -667,17 +679,35 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   // Botão Imprimir
-  document.getElementById("print").addEventListener("click", function () {
-    const hasContent =
-      document.querySelectorAll("#grid tbody tr").length > 0 ||
-      document.querySelectorAll(".qr-card").length > 0;
-
-    if (!hasContent) {
-      showStatus("Nada para imprimir. Gere os QR Codes primeiro.", "error");
-      return;
-    }
+  document.getElementById("print-btn").addEventListener("click", function () {
     window.print();
   });
+
+  // Função para verificar se há conteúdo para limpar
+  function hasContentToClear() {
+    const text = document.getElementById("input").value.trim();
+    const hasTableRows = document.querySelectorAll("#grid tbody tr").length > 0;
+    const hasCards = document.querySelectorAll(".qr-card").length > 0;
+    const hasFileName = document.getElementById("file-name").textContent !== "Nenhum arquivo selecionado";
+    
+    return text || hasTableRows || hasCards || hasFileName;
+  }
+
+  // Função para atualizar estado do botão Limpar
+  function updateClearButton() {
+    const clearBtn = document.getElementById("clear");
+    const hasContent = hasContentToClear();
+    clearBtn.disabled = !hasContent;
+  }
+
+  // Função para atualizar estado do botão Imprimir
+  function updatePrintButton() {
+    const printBtn = document.getElementById("print-btn");
+    const hasQRCodes = document.querySelectorAll("#grid tbody tr").length > 0 ||
+                       document.querySelectorAll(".qr-card").length > 0;
+
+    printBtn.disabled = !hasQRCodes;
+  }
 
   // Botão Limpar
   document.getElementById("clear").addEventListener("click", function () {
@@ -685,13 +715,17 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("table-container").style.display = "none";
     document.getElementById("qr-grid-container").style.display = "none";
     document.getElementById("empty-state").style.display = "block";
-    document.getElementById("file-name").textContent =
-      "Nenhum arquivo selecionado";
+    document.getElementById("file-name").textContent = "Nenhum arquivo selecionado";
     document.getElementById("status").style.display = "none";
+    document.getElementById("csv").value = "";
     updateResultsCount(0);
 
     // Limpar localStorage
     localStorage.removeItem("qrPreferences");
+    
+    // Atualizar estado dos botões
+    updateClearButton();
+    updatePrintButton();
   });
 
   // Upload de arquivo CSV
@@ -724,26 +758,11 @@ document.addEventListener("DOMContentLoaded", function () {
     .addEventListener("change", saveToLocalStorage);
   document
     .getElementById("input")
-    .addEventListener("input", saveToLocalStorage);
-
-  // Botão de exportação (funcionalidade básica)
-  document.getElementById("export-btn").addEventListener("click", function () {
-    const text = document.getElementById("input").value;
-    if (!text.trim()) {
-      showStatus("Nenhum dado para exportar", "error");
-      return;
-    }
-
-    const blob = new Blob([text], { type: "text/plain" });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = "qrcodes_data.txt";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-
-    showStatus("Dados exportados com sucesso", "success");
-  });
+    .addEventListener("input", function() {
+      saveToLocalStorage();
+      updateClearButton();
+      updatePrintButton();
+    });
 
   // Botão de ajuda
   document.querySelector(".btn-help").addEventListener("click", function () {

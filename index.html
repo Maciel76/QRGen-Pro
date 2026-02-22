@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>QR code de produtos</title>
+    <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
@@ -19,6 +20,18 @@
   <body>
     <div class="container">
       <header class="header">
+        <div class="header-particles">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
         <div class="header-content">
           <h1><i class="fas fa-qrcode"></i> QRGen Produtos</h1>
           <p class="description">
@@ -59,6 +72,9 @@
             <span id="file-name" class="file-name"
               >Nenhum arquivo selecionado</span
             >
+            <button id="clear" class="btn btn-clear">
+              <i class="fas fa-trash-alt"></i> Limpar
+            </button>
           </div>
 
           <div class="options-grid">
@@ -100,12 +116,6 @@
             <button id="generate" class="btn btn-primary">
               <i class="fas fa-bolt"></i> Gerar QR Codes
             </button>
-            <button id="print" class="btn btn-secondary">
-              <i class="fas fa-print"></i> Imprimir
-            </button>
-            <button id="clear" class="btn btn-outline" style="background-color: tomato; color: white; border: none;">
-              <i class="fas fa-trash-alt"></i> Limpar
-            </button>
             <button
               id="addMilRef"
               class="btn btn-secondary"
@@ -117,7 +127,7 @@
             </button>
             <button
               id="applyQuantity"
-              class="btn btn-secondary"
+              class="btn btn-warning"
               style="transition: all 0.3s ease"
             >
               <i class="fas fa-hashtag"></i>
@@ -140,8 +150,8 @@
 
           <div class="results-info">
             <span id="results-count">0 itens</span>
-            <button class="btn-icon" id="export-btn">
-              <i class="fas fa-download"></i>
+            <button class="btn-print" id="print-btn" disabled>
+              <i class="fas fa-print"></i> Imprimir
             </button>
           </div>
         </section>
