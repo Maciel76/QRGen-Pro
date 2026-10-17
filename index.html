@@ -1,237 +1,96 @@
 <!doctype html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>QR code de produtos</title>
-    <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <div class="container">
-      <header class="header">
-        <div class="header-particles">
-          <span></span>
-          <span></span>
-          <span></span>
-          <span></span>
-          <span></span>
-          <span></span>
-          <span></span>
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
-        <div class="header-content">
-          <h1><i class="fas fa-qrcode"></i> QRGen Produtos</h1>
-          <p class="description">
-            Gerador avançado de QR Codes para seus produtos e inventário
-          </p>
-        </div>
-        <div class="theme-toggle">
-          <i class="fas fa-moon"></i>
-        </div>
-      </header>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#7c3aed" />
+  <title>QRGen Pro · Estúdio de etiquetas</title>
+  <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <svg class="icon-defs" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs>
+    <symbol id="i-qr" viewBox="0 0 24 24"><path d="M3 3h6v6H3zM15 3h6v6h-6zM3 15h6v6H3zM15 15h2v2h-2zM21 15v6h-6v-2M12 3v9H3M12 15v6M15 12h6"/></symbol>
+    <symbol id="i-bars" viewBox="0 0 24 24"><path d="M3 5v14M6 5v14M10 5v14M12 5v14M16 5v14M20 5v14M22 5v14"/></symbol>
+    <symbol id="i-print" viewBox="0 0 24 24"><path d="M7 8V3h10v5M7 17H3V8h18v9h-4M7 14h10v7H7zM17 11h1"/></symbol>
+    <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 16V3m-5 5 5-5 5 5M4 15v6h16v-6"/></symbol>
+    <symbol id="i-grid" viewBox="0 0 24 24"><path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z"/></symbol>
+    <symbol id="i-table" viewBox="0 0 24 24"><path d="M3 4h18v16H3zM3 9h18M3 14h18M9 4v16"/></symbol>
+    <symbol id="i-leaf" viewBox="0 0 24 24"><path d="M5 19C-1 8 10 3 21 3c0 12-5 20-14 14M3 21 16 8"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h16m-6-6 6 6-6 6"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 15A9 9 0 0 1 9 4a9 9 0 1 0 11 11Z"/></symbol>
+    <symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9 9a3 3 0 1 1 5 2c-2 1-2 2-2 3m0 3v.1"/></symbol>
+    <symbol id="i-bolt" viewBox="0 0 24 24"><path d="m13 2-9 12h7l-1 8 10-13h-8z"/></symbol>
+    <symbol id="i-list" viewBox="0 0 24 24"><path d="M9 6h12M9 12h12M9 18h12M3 4h1v4M3 11c2-2 4 0 1 2l-1 1h3M3 17h2l-1 1c3 0 2 3-1 2"/></symbol>
+    <symbol id="i-hash" viewBox="0 0 24 24"><path d="m9 3-2 18M17 3l-2 18M3 9h18M2 15h18"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7M14 10v7"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+  </defs></svg>
+  <div class="app-shell">
+    <header class="topbar original-header">
+      <div class="header-content">
+        <a class="brand" href="./"><img class="header-logo" src="assets/icons/qrcode.svg" width="32" height="32" alt="" /><span>QRGen Produtos</span></a>
+        <p class="header-description">Gerador avançado de QR Codes para seus produtos e inventário</p>
+      </div>
+      <button class="icon-button" id="theme-toggle" aria-label="Alternar tema" title="Alternar tema"><svg class="icon"><use href="#i-moon"/></svg></button>
+    </header>
+    <main>
+      <div class="studio-layout">
+        <section class="control-panel" aria-label="Configurações de geração">
+          <div class="section-heading"><span class="step">01</span><h2>Dados dos produtos</h2></div>
+          <div class="input-label-row"><label for="input" class="field-label">Sua lista de produtos</label><label class="upload-zone file-upload-label" for="csv"><strong>Selecionar planilha</strong><input type="file" id="csv" accept=".xlsx,.xls,.xlsm,.xlsb,.xltx,.xltm,.xlt,.xlw,.ods,.ots,.fods,.numbers,.csv,.tsv,.txt,.xml,.html,.htm,.dif,.slk,.sylk,.dbf,.wk1,.wk2,.wk3,.wk4,.wks,.123,.wq1,.wq2,.wb1,.wb2,.wb3,.qpw,.xlr,.et,.uos,.prn,.rtf,.eth" /></label><button class="icon-button clear-button" id="clear" disabled aria-label="Limpar dados e etiquetas" title="Limpar dados e etiquetas"><svg class="icon"><use href="#i-trash"/></svg></button></div>
+          <textarea id="input" spellcheck="false" placeholder="PROD001;Camiseta básica;10&#10;PROD002;Tênis casual;5&#10;PROD003;Mochila urbana;8" aria-describedby="input-hint"></textarea>
+          <div class="input-hint" id="input-hint"><span>código;nome;quantidade</span><span>Uma linha por produto</span></div>
+      <section class="generation-panel" aria-label="Ações dos códigos">
+        <div class="generation-actions">
 
-      <main class="main-content">
-        <section class="control-panel">
-          <div class="panel-header">
-            <h2><i class="fas fa-sliders-h"></i> Controle de Geração</h2>
-            <div class="header-actions">
-              <button class="btn-help">
-                <i class="fas fa-question-circle"></i> Ajuda
-              </button>
-            </div>
-          </div>
-
-          <div class="input-section">
-            <label for="input" class="input-label">
-              <i class="fas fa-pencil-alt"></i> Dados para gerar QR Codes
-            </label>
-            <textarea
-              id="input"
-              placeholder="Cole os dados no formato: código;nome;quantidade (uma linha por item)"
-            ></textarea>
-          </div>
-
+          <button id="addMilRef" class="action-button reference-button" title="Adiciona 0001 ao final de cada código"><span>Mil de Ref</span></button>
+          <button id="applyQuantity" class="action-button quantity-button" title="Adiciona a quantidade com pelo menos quatro dígitos ao final de cada código"><span>Quantidade</span></button>
+        </div>
+        <div id="status" class="status" role="status" aria-live="polite" hidden></div>
+        <div class="privacy-note"><svg class="icon"><use href="#i-check"/></svg> Seus dados ficam apenas neste navegador.</div>
+      </section>
           <div class="file-upload">
-            <label for="csv" class="file-upload-label">
-              <i class="fas fa-cloud-upload-alt"></i> Selecionar arquivo CSV
-              <input type="file" id="csv" accept=".csv" />
-            </label>
-            <span id="file-name" class="file-name"
-              >Nenhum arquivo selecionado</span
-            >
-            <button id="clear" class="btn btn-clear">
-              <i class="fas fa-trash-alt"></i> Limpar
-            </button>
+            <button id="generate" class="primary-button"><span id="generate-text">Gerar QR Code</span></button>
+            <span id="file-name" class="file-name">Nenhum arquivo selecionado</span>
+            <p class="import-hint">Excel, CSV, OpenDocument, Numbers e outros formatos.<br>Aceita 1, 2 ou 3 colunas, com ou sem cabeçalho.</p>
           </div>
-
-          <div class="options-grid">
-            <div class="option-group">
-              <label for="qrSize" class="option-label">
-                <i class="fas fa-expand-arrows-alt"></i> Tamanho do QR Code
-              </label>
-              <input type="number" id="qrSize" value="120" min="64" max="256" />
-            </div>
-
-            <div class="option-group">
-              <label for="qrEcc" class="option-label">
-                <i class="fas fa-shield-alt"></i> Correção de Erro
-              </label>
-              <select id="qrEcc">
-                <option value="L">L (7%)</option>
-                <option value="M" selected>M (15%)</option>
-                <option value="Q">Q (25%)</option>
-                <option value="H">H (30%)</option>
-              </select>
-            </div>
-
-            <div class="option-group checkbox-group">
-              <input type="checkbox" id="dedup" checked />
-              <label for="dedup" class="checkbox-label">
-                <i class="fas fa-filter"></i> Deduplicar por código
-              </label>
-            </div>
-
-            <div class="option-group">
-              <label for="qrColor" class="option-label">
-                <i class="fas fa-palette"></i> Cor do QR Code
-              </label>
-              <input type="color" id="qrColor" value="#000000" />
-            </div>
-          </div>
-
-          <div class="actions">
-            <button id="generate" class="btn btn-primary">
-              <i class="fas fa-bolt"></i> Gerar QR Codes
-            </button>
-            <button
-              id="addMilRef"
-              class="btn btn-secondary"
-              data-active="false"
-              style="transition: all 0.3s ease"
-            >
-              <i class="fas fa-list-ol"></i>
-              <span id="milRefText">Aplicar Mil de Ref</span>
-            </button>
-            <button
-              id="applyQuantity"
-              class="btn btn-warning"
-              style="transition: all 0.3s ease"
-            >
-              <i class="fas fa-hashtag"></i>
-              <span id="applyQuantityText">Aplica Quantidade</span>
-            </button>
-          </div>
-
-          <div id="status" class="status"></div>
+          <div id="sheet-picker" hidden><label class="field-label" for="sheet-select">Aba da planilha</label><select id="sheet-select"></select></div>
+          <div class="section-heading settings-heading"><span class="step">02</span><h2>Personalize a etiqueta</h2></div>
+          <div class="type-switch" role="group" aria-label="Formato da etiqueta"><button data-type="qr" class="active" aria-pressed="true"><svg class="icon"><use href="#i-qr"/></svg> QR Code</button><button data-type="barcode" aria-pressed="false"><svg class="icon"><use href="#i-bars"/></svg> Código de barras</button></div>
+          <div id="barcode-options" hidden><label class="field-label" for="barcodeFormat">Padrão do código de barras</label><select id="barcodeFormat"><option value="CODE128">Code 128 · Letras e números</option><option value="EAN13">EAN-13 · Produtos de varejo</option><option value="CODE39">Code 39 · Identificação</option></select><p class="format-hint" id="format-hint">Aceita letras, números e símbolos ASCII.</p></div>
+          <div class="options-grid"><div><label class="field-label" for="qrSize" id="size-label">Tamanho do QR Code</label><div class="unit-input"><input type="number" id="qrSize" value="120" min="64" max="256" required /><span>px</span></div></div><div><label class="field-label" for="qrColor">Cor do código</label><div class="color-input"><input type="color" id="qrColor" value="#000000" /><span id="color-value">#000000</span></div></div></div>
+          <div id="qr-options"><label class="field-label" for="qrEcc">Correção de erro</label><select id="qrEcc"><option value="L">Baixa · 7%</option><option value="M" selected>Média · 15% (recomendado)</option><option value="Q">Alta · 25%</option><option value="H">Máxima · 30%</option></select></div>
+          <label class="check-row" for="dedup"><span><strong>Remover códigos duplicados</strong><small>Mantém a primeira ocorrência de cada código</small></span><input type="checkbox" id="dedup" checked /></label>
         </section>
-
-        <section class="view-options">
-          <div class="view-toggle">
-            <button data-view="cards" class="view-btn active">
-              <i class="fas fa-th-large"></i> Cards
-            </button>
-            <button data-view="table" class="view-btn">
-              <i class="fas fa-table"></i> Tabela
-            </button>
-            <button data-view="economic" class="btn-economic">
-              <i class="fas fa-leaf"></i> Econômico
-            </button>
-          </div>
-
-          <div class="results-info">
-            <span id="results-count">0 itens</span>
-            <button class="btn-print" id="print-btn" disabled>
-              <i class="fas fa-print"></i> Imprimir
-            </button>
-          </div>
+        <section class="preview-panel" aria-label="Prévia das etiquetas">
+          <div class="preview-toolbar"><div class="view-toggle" role="group" aria-label="Visualização"><button data-view="cards" class="active" aria-pressed="true" title="Cards"><svg class="icon"><use href="#i-grid"/></svg><span>Cards</span></button><button data-view="table" aria-pressed="false" title="Tabela"><svg class="icon"><use href="#i-table"/></svg><span>Tabela</span></button><button data-view="economic" aria-pressed="false" title="Econômico"><svg class="icon"><use href="#i-leaf"/></svg><span>Econômico</span></button></div><div class="preview-tools"><button id="clear-results" class="clear-results-button" title="Limpar dados e etiquetas" hidden><svg class="icon"><use href="#i-trash"/></svg> Limpar</button><button class="print-button" id="print-btn" disabled><svg class="icon"><use href="#i-print"/></svg> Imprimir etiquetas</button></div></div>
+          <div class="preview-canvas" tabindex="0" role="region" aria-label="Etiquetas geradas, área com rolagem"><div id="empty-state" class="empty-state"><div class="empty-illustration"><div class="sample-label back"><svg aria-hidden="true"><use href="#i-bars"/></svg><span></span><span></span></div><div class="sample-label front"><svg><use href="#i-qr"/></svg><span></span><span></span></div><span class="sparkle">+</span></div><h3>Suas etiquetas aparecem aqui</h3><p>Cole sua lista ou importe uma planilha para começar.</p></div>
+          <div id="qr-grid-container" hidden><div class="qr-grid"></div></div>
+          <div id="table-container" hidden><table id="grid"><thead><tr><th>Código / Produto</th><th class="quantity-column">Qtd.</th><th>Etiqueta</th></tr></thead><tbody></tbody></table></div></div>
+          <div class="print-bar"><div><svg class="icon"><use href="#i-print"/></svg><span><strong>Impressão de etiquetas</strong><small>Imprima ou salve em PDF pelo navegador.</small></span></div><span id="results-count" class="label-count" aria-live="polite">0 etiquetas</span></div>
         </section>
-
-        <div id="qr-grid-container" class="qr-grid-container">
-          <div class="qr-grid"></div>
-        </div>
-
-        <div id="table-container" class="table-container">
-          <table id="grid">
-            <thead>
-              <tr>
-                <th>Código</th>
-                <th>Nome</th>
-                <th>Quantidade</th>
-                <th>QR Code</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-
-        <div id="empty-state" class="empty-state">
-          <div class="empty-icon">
-            <i class="fas fa-qrcode"></i>
-          </div>
-          <h3>Nada para exibir ainda</h3>
-          <p>
-            Cole os dados ou faça upload de um arquivo CSV para gerar QR Codes.
-          </p>
-        </div>
-      </main>
+      </div>
 
       <footer class="site-footer">
         <div class="footer-content">
-          <div class="footer-section">
-            <h3>Desenvolvido por</h3>
-            <p>Maciel Ribeiro</p>
-          </div>
-
-          <div class="footer-section">
-            <h3>Contato</h3>
-            <div class="contact-links">
-              <a
-                href="https://wa.me/5562982809010"
-                target="_blank"
-                class="contact-link"
-              >
-                <i class="fab fa-whatsapp"></i>
-                <span>(62) 98280-9010</span>
-              </a>
-
-              <a href="mailto:stwcontato@hotmail.com" class="contact-link">
-                <i class="fas fa-envelope"></i>
-                <span>stwcontato@hotmail.com</span>
-              </a>
-
-              <a
-                href="https://github.com/Maciel76"
-                target="_blank"
-                class="contact-link"
-              >
-                <i class="fab fa-github"></i>
-                <span>Maciel76</span>
-              </a>
-            </div>
-          </div>
+          <div class="footer-section"><h3>Desenvolvido por</h3><p>Maciel Ribeiro</p></div>
+          <div class="footer-section"><h3>Contato</h3><div class="contact-links">
+            <a href="https://wa.me/5562982809010" target="_blank" rel="noopener noreferrer" class="contact-link"><img src="assets/icons/whatsapp.svg" width="19" height="19" alt="" /><span>(62) 98280-9010</span></a>
+            <a href="mailto:stwcontato@hotmail.com" class="contact-link"><img src="assets/icons/envelope.svg" width="19" height="19" alt="" /><span>stwcontato@hotmail.com</span></a>
+            <a href="https://github.com/Maciel76" target="_blank" rel="noopener noreferrer" class="contact-link"><img src="assets/icons/github.svg" width="19" height="19" alt="" /><span>Maciel76</span></a>
+          </div></div>
+          <button class="text-button" id="help-btn"><svg class="icon"><use href="#i-help"/></svg> Ajuda</button>
         </div>
-
-        <div class="footer-bottom">
-          <p>&copy; 2023 QRGen Pro. Todos os direitos reservados.</p>
-        </div>
+        <div class="footer-bottom"><span>© 2026 QRGen Pro. Todos os direitos reservados.</span></div>
       </footer>
-    </div>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-    <script src="app.js"></script>
-  </body>
+    </main>
+  </div>
+  <dialog id="help-dialog"><div class="dialog-heading"><h2>Da lista à etiqueta</h2><button id="close-help" class="icon-button" aria-label="Fechar ajuda">✕</button></div><ol><li>Cole os dados no formato <code>código;nome;quantidade</code> ou importe uma planilha com ou sem cabeçalho. São aceitos Excel (XLSX, XLS, XLSM, XLSB), OpenDocument (ODS, FODS), Numbers, CSV, TSV e outros formatos de tabela.</li><li>As colunas código, nome e quantidade são reconhecidas automaticamente. Pode importar apenas uma ou duas. Sem cabeçalho, é usada essa ordem; sem código, o primeiro campo preenchido é usado como código. Se houver várias abas, escolha a que deseja importar.</li><li>Escolha QR Code ou código de barras e personalize a etiqueta.</li><li>Clique em gerar e escolha entre cards, tabela ou modo econômico.</li><li>“Aplicar Mil de Ref” acrescenta 0001 ao código. “Aplica Quantidade” acrescenta a quantidade com no mínimo quatro dígitos (ex.: 3 vira 0003). Funcionam para QR Code e barras. Cada clique aplica o sufixo novamente; clique em gerar para atualizar as etiquetas. Em EAN-13, o código final precisa continuar com 13 dígitos e verificador válido.</li><li>Imprima em A4 ou escolha “Salvar como PDF” na janela de impressão. Use escala de 100% e desative cabeçalhos e rodapés.</li></ol><p>EAN-13 exige 13 dígitos, incluindo um dígito verificador válido. Code 39 aceita letras maiúsculas, números, espaços e os símbolos - . $ / + %.</p><p>Para melhor leitura, prefira códigos escuros sobre o fundo branco. Teste uma etiqueta com seu leitor antes de imprimir um lote.</p></dialog>
+  <script src="assets/vendor/qrcode.min.js"></script>
+  <script src="assets/vendor/papaparse.min.js"></script>
+  <script src="assets/vendor/JsBarcode.all.min.js"></script>
+  <script src="assets/vendor/xlsx.full.min.js"></script>
+  <script src="app.js"></script>
+</body>
 </html>
