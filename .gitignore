@@ -1,0 +1,6 @@
+# Variáveis privadas: nunca versionar.
+.env
+.env.*
+!.env.example
+.vercel/
+node_modules/

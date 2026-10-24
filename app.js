@@ -250,6 +250,7 @@ function generate() {
     if (errors.length) showStatus(`${state.validCount} etiquetas geradas; ${errors.length} inválidas. ${errors[0]}`, state.validCount ? "warning" : "error");
     else showStatus(`${state.validCount} ${state.validCount === 1 ? "etiqueta pronta" : "etiquetas prontas"} para imprimir.`);
     saveToLocalStorage();
+    if (state.validCount > 0) document.dispatchEvent(new CustomEvent("qrgen:generated", { detail: { count: state.validCount } }));
   } catch (error) { showStatus(error.message, "error"); }
 }
 let tabAnimations = [];
@@ -457,6 +458,7 @@ document.addEventListener("DOMContentLoaded", () => {
   $("addMilRef").addEventListener("click", () => applySuffix(false));
   $("applyQuantity").addEventListener("click", () => applySuffix(true));
   $("clear").addEventListener("click", () => {
+    document.dispatchEvent(new Event("qrgen:cleared"));
     resetImport();
     $("input").value = "";
     $("csv").value = "";

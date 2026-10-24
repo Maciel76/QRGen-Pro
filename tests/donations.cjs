@@ -1,0 +1,84 @@
+const { chromium } = require('playwright');
+const { pathToFileURL } = require('node:url');
+const path = require('node:path');
+const os = require('node:os');
+const assert = require('node:assert/strict');
+(async () => {
+  const browser = await chromium.launch({ channel: process.env.TEST_BROWSER || 'chrome', headless: true });
+  const context = await browser.newContext({ viewport: { width: 1366, height: 1000 } });
+  const page = await context.newPage();
+  const errors = [];
+  page.on('pageerror', (e) => errors.push(e.message));
+  const root = path.resolve(__dirname, '..');
+  const generator = pathToFileURL(path.join(root, 'index.html')).href;
+  const donation = pathToFileURL(path.join(root, 'doar.html')).href;
+  await page.goto(generator);
+  await page.evaluate(() => { localStorage.clear(); sessionStorage.clear(); });
+  await page.reload();
+  assert.equal(await page.locator('#donation-notice').isVisible(), false);
+  await page.locator('#generate').click();
+  await page.waitForTimeout(800);
+  assert.equal(await page.locator('#donation-notice').isVisible(), false);
+  await page.locator('#input').fill('ABC123;Produto;2');
+  await page.locator('#generate').click();
+  await page.locator('#donation-notice').waitFor({ state: 'visible' });
+  assert.equal(await page.locator('#print-btn').isEnabled(), true);
+  await page.screenshot({ path: path.join(os.tmpdir(), 'qrgen-donation-notice.png'), fullPage: true });
+  await page.emulateMedia({ media: 'print' });
+  assert.equal(await page.locator('#donation-notice').isVisible(), false);
+  await page.emulateMedia({ media: 'screen' });
+  await page.locator('#donation-dismiss').click();
+  await page.locator('#generate').click();
+  await page.waitForTimeout(800);
+  assert.equal(await page.locator('#donation-notice').isVisible(), false);
+  await page.reload();
+  await page.locator('#generate').click();
+  await page.waitForTimeout(800);
+  assert.equal(await page.locator('#donation-notice').isVisible(), false);
+  await page.goto(donation);
+  assert.equal(await page.locator('#donation-pending').isVisible(), true);
+  assert.equal(await page.locator('#donation-qr canvas').count(), 0);
+  await page.screenshot({ path: path.join(os.tmpdir(), 'qrgen-donation-page.png'), fullPage: true });
+  await page.evaluate(() => renderDonationPage({ paymentUrl: 'javascript:alert(1)', pixCode: 'APP_USR-invalid-test-credential' }));
+  assert.equal(await page.locator('#donation-payment-content').isVisible(), false);
+  await page.evaluate(() => renderDonationPage({ paymentUrl: 'https://mpago.la/teste-automatizado' }));
+  assert.equal(await page.locator('#donation-payment-content').isVisible(), true);
+  assert.equal(await page.locator('#donation-qr canvas').count(), 1);
+  assert.equal(await page.locator('#donation-pay-link').getAttribute('href'), 'https://mpago.la/teste-automatizado');
+  assert.equal(await page.locator('#donation-pay-link').getAttribute('rel'), 'noopener noreferrer');
+  // Synthetic Pix fixture only: no payment is submitted during tests.
+  const pix = await page.evaluate(() => {
+    const tlv = (tag, value) => tag + String(value.length).padStart(2, '0') + value;
+    const payload = tlv('00', '01') + tlv('26', tlv('00', 'BR.GOV.BCB.PIX') + tlv('01', 'test@example.com')) + tlv('52', '0000') + tlv('53', '986') + tlv('58', 'BR') + tlv('59', 'TESTE') + tlv('60', 'GOIANIA') + tlv('62', tlv('05', '***')) + '6304';
+    let crc = 0xffff;
+    for (const byte of new TextEncoder().encode(payload)) {
+      crc ^= byte << 8;
+      for (let i = 0; i < 8; i++) crc = ((crc << 1) ^ ((crc & 0x8000) ? 0x1021 : 0)) & 0xffff;
+    }
+    return payload + crc.toString(16).padStart(4, '0').toUpperCase();
+  });
+  await page.evaluate((pixCode) => renderDonationPage({ pixCode }), pix);
+  assert.equal(await page.locator('#donation-pix').isVisible(), true);
+  assert.equal(await page.locator('#donation-pix-code').inputValue(), pix);
+  await page.evaluate((pixCode) => renderDonationPage({ pixCode: pixCode.slice(0, -4) + 'FFFF' }), pix);
+  assert.equal(await page.locator('#donation-pending').isVisible(), true);
+  for (const width of [390, 768, 1366]) {
+    await page.setViewportSize({ width, height: 1000 });
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
+  }
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.screenshot({ path: path.join(os.tmpdir(), 'qrgen-donation-mobile.png'), fullPage: true });
+  await page.goto(generator);
+  await page.locator('#clear').click();
+  await page.evaluate(() => sessionStorage.clear());
+  await page.reload();
+  await page.locator('.type-switch [data-type="barcode"]').click();
+  await page.locator('#input').fill('ABC123;Produto;2');
+  await page.locator('#generate').click();
+  await page.locator('#donation-notice').waitFor({ state: 'visible' });
+  await page.locator('#donation-notice a').click();
+  assert.equal(new URL(page.url()).pathname.endsWith('/doar.html'), true);
+  assert.deepEqual(errors, []);
+  await browser.close();
+  console.log('PASS: convite após QR/barras, uma vez por sessão, rejeição de credenciais/destinos inválidos, QR estático por link ou Pix, layout responsivo e convite fora da impressão.');
+})().catch((error) => { console.error(error); process.exit(1); });

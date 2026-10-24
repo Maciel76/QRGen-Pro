@@ -87,10 +87,18 @@
     </main>
   </div>
   <dialog id="help-dialog"><div class="dialog-heading"><h2>Da lista à etiqueta</h2><button id="close-help" class="icon-button" aria-label="Fechar ajuda">✕</button></div><ol><li>Cole os dados no formato <code>código;nome;quantidade</code> ou importe uma planilha com ou sem cabeçalho. São aceitos Excel (XLSX, XLS, XLSM, XLSB), OpenDocument (ODS, FODS), Numbers, CSV, TSV e outros formatos de tabela.</li><li>As colunas código, nome e quantidade são reconhecidas automaticamente. Pode importar apenas uma ou duas. Sem cabeçalho, é usada essa ordem; sem código, o primeiro campo preenchido é usado como código. Se houver várias abas, escolha a que deseja importar.</li><li>Escolha QR Code ou código de barras e personalize a etiqueta.</li><li>Clique em gerar e escolha entre cards, tabela ou modo econômico.</li><li>“Aplicar Mil de Ref” acrescenta 0001 ao código. “Aplica Quantidade” acrescenta a quantidade com no mínimo quatro dígitos (ex.: 3 vira 0003). Funcionam para QR Code e barras. Cada clique aplica o sufixo novamente; clique em gerar para atualizar as etiquetas. Em EAN-13, o código final precisa continuar com 13 dígitos e verificador válido.</li><li>Imprima em A4 ou escolha “Salvar como PDF” na janela de impressão. Use escala de 100% e desative cabeçalhos e rodapés.</li></ol><p>EAN-13 exige 13 dígitos, incluindo um dígito verificador válido. Code 39 aceita letras maiúsculas, números, espaços e os símbolos - . $ / + %.</p><p>Para melhor leitura, prefira códigos escuros sobre o fundo branco. Teste uma etiqueta com seu leitor antes de imprimir um lote.</p></dialog>
+  <aside id="donation-notice" class="donation-notice" role="region" aria-label="Apoie o QRGen Pro" hidden>
+    <button id="donation-close" class="donation-notice-close" aria-label="Fechar convite de doação">×</button>
+    <span class="donation-notice-heart" aria-hidden="true">♡</span>
+    <h2>O QRGen ajudou você?</h2>
+    <p>Uma contribuição ajuda a manter o projeto e trazer novas melhorias. Apoie o QRGen Pro com o valor que desejar.</p>
+    <div class="donation-notice-actions"><a href="doar.html">Apoiar o projeto</a><button id="donation-dismiss">Agora não</button></div>
+  </aside>
   <script src="assets/vendor/qrcode.min.js"></script>
   <script src="assets/vendor/papaparse.min.js"></script>
   <script src="assets/vendor/JsBarcode.all.min.js"></script>
   <script src="assets/vendor/xlsx.full.min.js"></script>
   <script src="app.js"></script>
+  <script src="donation-notice.js"></script>
 </body>
 </html>

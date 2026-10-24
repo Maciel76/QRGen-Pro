@@ -1,0 +1,6 @@
+.env
+.env.*
+.git/
+.vercel/
+tests/
+DOACOES.md

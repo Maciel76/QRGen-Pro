@@ -537,3 +537,35 @@ body.dark-mode .clear-results-button, body.dark-mode .clear-button { color: #f87
 @media screen and (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+/* Convite opcional após gerar as etiquetas. */
+.donation-notice {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 50;
+  width: 355px;
+  max-width: calc(100vw - 32px);
+  padding: 23px;
+  border: 1px solid var(--line);
+  border-top: 3px solid #7c3aed;
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: 0 12px 46px #22163b26;
+}
+.donation-notice-close { position: absolute; top: 9px; right: 11px; padding: 2px 7px; border: 0; border-radius: 4px; background: transparent; color: var(--muted); font-size: 22px; line-height: 1; }
+.donation-notice-close:hover { background: var(--canvas); color: var(--text); }
+.donation-notice-heart { color: var(--primary); font-size: 30px; line-height: 1; display: block; margin-bottom: 10px; }
+.donation-notice h2 { font-size: 16px; margin: 0; }
+.donation-notice p { color: var(--muted); font-size: 12px; line-height: 1.8; margin: 9px 0 17px; }
+.donation-notice-actions { display: flex; align-items: center; gap: 12px; }
+.donation-notice-actions a { background: #7040e5; color: #fff; border-radius: 7px; padding: 10px 14px; font-size: 12px; font-weight: 600; }
+.donation-notice-actions a:hover { background: #5f2fd0; }
+.donation-notice-actions button { background: transparent; color: var(--muted); padding: 8px 0; border: 0; font-size: 12px; }
+.donation-notice-actions button:hover { color: var(--text); text-decoration: underline; }
+@media screen and (prefers-reduced-motion: no-preference) {
+  .donation-notice:not([hidden]) { animation: donation-notice-enter .22s ease-out; }
+  @keyframes donation-notice-enter { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+}
+@media screen and (max-width: 600px) { .donation-notice { right: 16px; bottom: 16px; padding: 20px; } }
+@media print { .donation-notice { display: none !important; } }

@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#7c3aed" />
+  <title>Apoie o projeto · QRGen Pro</title>
+  <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="donation.css" />
+</head>
+<body class="donation-page">
+  <header class="topbar original-header">
+    <div class="header-content">
+      <a class="brand" href="index.html"><img class="header-logo" src="assets/icons/qrcode.svg" width="32" height="32" alt="" /><span>QRGen Produtos</span></a>
+      <p class="header-description">Uma contribuição sua ajuda a escrever os próximos passos.</p>
+    </div>
+  </header>
+  <main class="donation-main">
+    <a class="donation-back" href="index.html">← Voltar ao gerador</a>
+    <div class="donation-layout">
+      <section class="donation-story">
+        <span class="donation-heart" aria-hidden="true">♡</span>
+        <h1>Se o QRGen facilita seu dia, ajude o projeto a continuar.</h1>
+        <p>Por trás de cada etiqueta, tem um projeto em evolução. Sua contribuição apoia o desenvolvimento, a manutenção e novas melhorias para gerar e imprimir seus códigos.</p>
+        <div class="donation-author"><span class="donation-avatar">MR</span><div><strong>Maciel Ribeiro</strong><span>Desenvolvedor do QRGen Pro</span></div></div>
+        <p class="donation-optional">Doar é opcional. Você pode continuar gerando e imprimindo seus códigos normalmente.</p>
+      </section>
+      <section class="donation-payment" aria-labelledby="donation-title">
+        <h2 id="donation-title">Contribua com o projeto</h2>
+        <p class="donation-subtitle">Cada apoio faz diferença.</p>
+        <div id="donation-pending" class="donation-pending"><span aria-hidden="true">♡</span><strong>Estamos preparando o recebimento</strong><p>O QR Code de doação estará disponível aqui em breve. Obrigado por querer contribuir!</p><a class="donation-link" href="index.html">Continuar usando o QRGen</a></div>
+        <form id="donation-checkout-form" class="donation-checkout-form" hidden>
+          <label for="donation-amount">Com quanto você gostaria de contribuir?</label>
+          <div class="donation-amount-options" role="group" aria-label="Sugestões de valor"><button type="button" data-amount="5">R$ 5</button><button type="button" data-amount="10">R$ 10</button><button type="button" data-amount="25">R$ 25</button></div>
+          <div class="donation-amount-field"><span>R$</span><input id="donation-amount" type="text" inputmode="decimal" autocomplete="off" placeholder="Outro valor" required aria-describedby="donation-amount-hint" /></div>
+          <p id="donation-amount-hint">Você escolhe o valor, a partir de R$ 1.</p>
+          <button id="donation-checkout-submit" class="donation-primary" type="submit">Continuar no Mercado Pago</button>
+          <p class="donation-payment-note">Após continuar, use o QR Code ou abra o Mercado Pago para escolher como pagar. Nenhum pagamento é feito automaticamente.</p>
+        </form>
+        <div id="donation-payment-content" hidden>
+          <div id="donation-qr" class="donation-qr" aria-label="QR Code para contribuir com o projeto"></div>
+          <p id="donation-instructions" class="donation-instructions"></p>
+          <div id="donation-pix" hidden><label for="donation-pix-code">Pix Copia e Cola</label><textarea id="donation-pix-code" readonly rows="3" spellcheck="false"></textarea><button id="donation-copy" class="donation-primary">Copiar código Pix</button></div>
+          <a id="donation-pay-link" class="donation-primary" target="_blank" rel="noopener noreferrer" hidden>Abrir Mercado Pago</a>
+          <p class="donation-payment-note">Confira o destinatário e o valor no aplicativo antes de concluir sua contribuição.</p>
+        </div>
+        <p id="donation-feedback" class="donation-feedback" role="status" aria-live="polite"></p>
+      </section>
+    </div>
+    <footer class="donation-footer"><span>QRGen Pro · Feito por Maciel Ribeiro</span><span>Obrigado por apoiar o projeto.</span></footer>
+  </main>
+  <script src="assets/vendor/qrcode.min.js"></script>
+  <script src="donation-config.js"></script>
+  <script src="donation-page.js"></script>
+</body>
+</html>
