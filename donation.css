@@ -43,3 +43,14 @@
 .donation-amount-field > span { color: var(--muted); font-size: 14px; }
 .donation-amount-field input { width: 100%; min-width: 0; padding: 12px 0; border: 0; background: transparent; color: var(--text); font-size: 17px; }
 #donation-amount-hint { color: var(--muted); font-size: 10px; margin: 7px 0 14px; }
+/* Identidade verde da página de contribuição. */
+body.donation-page { --bg: #f0f8f4; --primary: #047857; --primary-light: #e3f4ea; --line: #dce9e2; --canvas: #f5faf7; background: var(--bg); }
+body.donation-page.dark-mode { --bg: #11231c; --surface: #193027; --canvas: #14271f; --text: #e8f4ed; --muted: #a4b9ad; --line: #304b3c; --primary: #6ee7b7; --primary-light: #244c38; }
+.donation-page .topbar.original-header { background: linear-gradient(110deg, #059669, #047857 65%, #065f46); box-shadow: 0 6px 12px #064e3b15; }
+.donation-page .donation-primary { background: #047857; }
+.donation-page .donation-primary:hover { background: #065f46; }
+.donation-page textarea:focus, .donation-page input:focus { outline-color: #10b98166; border-color: #059669; }
+.donation-payer-label { display: block; font-size: 12px; margin: 14px 0 7px; font-weight: 600; }
+.donation-payer-input { display: block; width: 100%; border: 1px solid var(--line); border-radius: 7px; padding: 11px 12px; background: var(--canvas); color: var(--text); font-size: 13px; }
+.donation-footer-support { display: inline-flex; align-items: center; gap: 6px; }
+.donation-footer-support > span { color: #059669; font-size: 15px; }

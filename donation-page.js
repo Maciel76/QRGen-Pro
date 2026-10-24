@@ -1,4 +1,6 @@
 "use strict";
+let donationExpiryTimer;
+let activePixExpiresAt = 0;
 function isDonationPaymentUrl(value) {
   try {
     const url = new URL(value);
@@ -16,6 +18,9 @@ function isDonationPixCode(value) {
   return crc.toString(16).padStart(4, "0").toUpperCase() === value.slice(-4).toUpperCase();
 }
 function renderDonationPage(config) {
+  clearTimeout(donationExpiryTimer);
+  activePixExpiresAt = 0;
+  document.getElementById("donation-expiry").hidden = true;
   const pending = document.getElementById("donation-pending");
   const content = document.getElementById("donation-payment-content");
   const feedback = document.getElementById("donation-feedback");
@@ -51,6 +56,18 @@ function renderDonationPage(config) {
     }
     pending.hidden = true;
     content.hidden = false;
+    const expiration = Date.parse(config?.expiresAt);
+    if (pix && Number.isFinite(expiration)) {
+      activePixExpiresAt = expiration;
+      const expiry = document.getElementById("donation-expiry");
+      expiry.hidden = false;
+      expiry.textContent = "Válido até " + new Intl.DateTimeFormat("pt-BR", { dateStyle: "short", timeStyle: "short" }).format(expiration);
+      donationExpiryTimer = setTimeout(() => {
+        content.hidden = true;
+        feedback.textContent = "O Pix expirou. Gere um novo código para contribuir.";
+        document.dispatchEvent(new Event("qrgen:pix-expired"));
+      }, Math.max(0, Math.min(expiration - Date.now(), 2147483647)));
+    }
   } catch {
     box.replaceChildren();
     feedback.textContent = "Não foi possível exibir o QR Code. Tente novamente mais tarde.";
@@ -62,7 +79,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setupDonationCheckout();
   document.getElementById("donation-copy").addEventListener("click", async () => {
     const field = document.getElementById("donation-pix-code");
-    if (!isDonationPixCode(field.value)) return;
+    if (!isDonationPixCode(field.value) || (activePixExpiresAt && activePixExpiresAt <= Date.now())) return;
     const feedback = document.getElementById("donation-feedback");
     try {
       if (navigator.clipboard?.writeText) await navigator.clipboard.writeText(field.value);
@@ -85,6 +102,9 @@ async function setupDonationCheckout() {
   if (!["https:", "http:"].includes(location.protocol)) return;
   const form = document.getElementById("donation-checkout-form");
   const field = document.getElementById("donation-amount");
+  const emailField = document.getElementById("donation-email");
+  const cpfField = document.getElementById("donation-cpf");
+  let requestId = crypto.randomUUID();
   const submit = document.getElementById("donation-checkout-submit");
   const feedback = document.getElementById("donation-feedback");
   try {
@@ -93,7 +113,11 @@ async function setupDonationCheckout() {
     document.getElementById("donation-pending").hidden = true;
     form.hidden = false;
   } catch { return; }
+  document.addEventListener("qrgen:pix-expired", () => { requestId = crypto.randomUUID(); });
   function invalidateCheckout() {
+    requestId = crypto.randomUUID();
+    clearTimeout(donationExpiryTimer);
+    activePixExpiresAt = 0;
     document.getElementById("donation-payment-content").hidden = true;
     document.getElementById("donation-pay-link").removeAttribute("href");
     feedback.textContent = "";
@@ -102,6 +126,8 @@ async function setupDonationCheckout() {
     });
   }
   field.addEventListener("input", invalidateCheckout);
+  emailField.addEventListener("input", invalidateCheckout);
+  cpfField.addEventListener("input", invalidateCheckout);
   form.querySelectorAll("[data-amount]").forEach((button) => button.addEventListener("click", () => {
     field.value = button.dataset.amount;
     invalidateCheckout();
@@ -118,26 +144,36 @@ async function setupDonationCheckout() {
     }
     submit.disabled = true;
     field.disabled = true;
+    emailField.disabled = true;
+    cpfField.disabled = true;
     form.querySelectorAll("[data-amount]").forEach((button) => { button.disabled = true; });
     submit.textContent = "Preparando contribuição…";
     feedback.textContent = "";
     try {
       const response = await fetch("/api/donations", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amountCents }), signal: AbortSignal.timeout(15000),
+        body: JSON.stringify({ amountCents, email: emailField.value.trim(), cpf: cpfField.value, requestId }), signal: AbortSignal.timeout(15000),
       });
       const result = await response.json();
-      if (!response.ok) throw new Error(result.error || "Não foi possível preparar sua contribuição.");
-      if (!isDonationPaymentUrl(result.checkoutUrl)) throw new Error("O endereço de pagamento não está disponível.");
-      renderDonationPage({ paymentUrl: result.checkoutUrl });
-      feedback.textContent = "Pagamento preparado. Abra o Mercado Pago ou escaneie o QR Code para continuar.";
+      if (!response.ok) {
+        if (response.status === 409) requestId = crypto.randomUUID();
+        const error = new Error(result.error || "Não foi possível preparar sua contribuição.");
+        error.reference = result.reference;
+        throw error;
+      }
+      if (!isDonationPixCode(result.pixCode)) throw new Error("O Mercado Pago não retornou um Pix válido. Tente novamente.");
+      renderDonationPage({ pixCode: result.pixCode, expiresAt: result.expiresAt });
+      feedback.textContent = "Pix gerado. Escaneie com o aplicativo do seu banco ou copie o código. Confirme o destinatário antes de pagar.";
     } catch (error) {
+      if (error.reference) feedback.dataset.reference = error.reference;
       feedback.textContent = error.name === "TimeoutError" ? "A solicitação demorou. Tente novamente em instantes." : error.message;
     } finally {
       submit.disabled = false;
       field.disabled = false;
+      emailField.disabled = false;
+      cpfField.disabled = false;
       form.querySelectorAll("[data-amount]").forEach((button) => { button.disabled = false; });
-      submit.textContent = "Continuar no Mercado Pago";
+      submit.textContent = "Gerar Pix de contribuição";
     }
   });
 }

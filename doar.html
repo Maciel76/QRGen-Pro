@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#7c3aed" />
+  <meta name="theme-color" content="#059669" />
   <title>Apoie o projeto · QRGen Pro</title>
   <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg" />
   <link rel="stylesheet" href="styles.css" />
@@ -35,12 +35,16 @@
           <div class="donation-amount-options" role="group" aria-label="Sugestões de valor"><button type="button" data-amount="5">R$ 5</button><button type="button" data-amount="10">R$ 10</button><button type="button" data-amount="25">R$ 25</button></div>
           <div class="donation-amount-field"><span>R$</span><input id="donation-amount" type="text" inputmode="decimal" autocomplete="off" placeholder="Outro valor" required aria-describedby="donation-amount-hint" /></div>
           <p id="donation-amount-hint">Você escolhe o valor, a partir de R$ 1.</p>
-          <button id="donation-checkout-submit" class="donation-primary" type="submit">Continuar no Mercado Pago</button>
-          <p class="donation-payment-note">Após continuar, use o QR Code ou abra o Mercado Pago para escolher como pagar. Nenhum pagamento é feito automaticamente.</p>
+          <label class="donation-payer-label" for="donation-email">Seu e-mail</label>
+          <input id="donation-email" class="donation-payer-input" type="email" autocomplete="email" required maxlength="254" placeholder="voce@exemplo.com" />
+          <label class="donation-payer-label" for="donation-cpf">Seu CPF</label>
+          <input id="donation-cpf" class="donation-payer-input" type="text" inputmode="numeric" maxlength="14" required placeholder="000.000.000-00" />
+          <button id="donation-checkout-submit" class="donation-primary" type="submit">Gerar Pix de contribuição</button>
+          <p class="donation-payment-note">E-mail e CPF são enviados ao Mercado Pago para emitir o Pix. Você conclui o pagamento no aplicativo do seu banco.</p>
         </form>
         <div id="donation-payment-content" hidden>
           <div id="donation-qr" class="donation-qr" aria-label="QR Code para contribuir com o projeto"></div>
-          <p id="donation-instructions" class="donation-instructions"></p>
+          <p id="donation-instructions" class="donation-instructions"></p><p id="donation-expiry" class="donation-payment-note" hidden></p>
           <div id="donation-pix" hidden><label for="donation-pix-code">Pix Copia e Cola</label><textarea id="donation-pix-code" readonly rows="3" spellcheck="false"></textarea><button id="donation-copy" class="donation-primary">Copiar código Pix</button></div>
           <a id="donation-pay-link" class="donation-primary" target="_blank" rel="noopener noreferrer" hidden>Abrir Mercado Pago</a>
           <p class="donation-payment-note">Confira o destinatário e o valor no aplicativo antes de concluir sua contribuição.</p>
@@ -48,7 +52,7 @@
         <p id="donation-feedback" class="donation-feedback" role="status" aria-live="polite"></p>
       </section>
     </div>
-    <footer class="donation-footer"><span>QRGen Pro · Feito por Maciel Ribeiro</span><span>Obrigado por apoiar o projeto.</span></footer>
+    <footer class="donation-footer"><span>QRGen Pro · Feito por Maciel Ribeiro</span><span class="donation-footer-support"><span aria-hidden="true">♥</span> Obrigado por apoiar o projeto.</span></footer>
   </main>
   <script src="assets/vendor/qrcode.min.js"></script>
   <script src="donation-config.js"></script>

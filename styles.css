@@ -569,3 +569,6 @@ body.dark-mode .clear-results-button, body.dark-mode .clear-button { color: #f87
 }
 @media screen and (max-width: 600px) { .donation-notice { right: 16px; bottom: 16px; padding: 20px; } }
 @media print { .donation-notice { display: none !important; } }
+.site-footer .footer-support-link { display: inline-flex; align-items: center; gap: 7px; flex-shrink: 0; color: #d1fae5; font-size: 11px; padding: 6px 0; }
+.footer-support-link span { color: #34d399; font-size: 17px; }
+.site-footer .footer-support-link:hover { color: #6ee7b7; }
